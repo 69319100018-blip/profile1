@@ -620,6 +620,7 @@ h1 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 22px;
+  perspective: 1100px;
 }
 
 @media (min-width: 720px) {
@@ -640,35 +641,41 @@ h1 {
   -webkit-backdrop-filter: blur(18px) saturate(1.15);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
   opacity: 0;
-  transform: translateY(36px) scale(0.97);
-  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+  /* เริ่มแบบหมุน + จมลง */
+  transform: translateY(56px) rotateY(22deg) scale(0.9);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
               border-color 0.3s ease,
               box-shadow 0.3s ease;
   transform-style: preserve-3d;
-  will-change: transform;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+/* สลับทิศหมุนซ้าย-ขวา สลับกัน */
+.work-card:nth-child(even) {
+  transform: translateY(56px) rotateY(-22deg) scale(0.9);
 }
 
 .work-card.in-view {
   opacity: 1;
-  transform: none;
-  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.18s ease-out,
+  transform: translateY(0) rotateY(0deg) scale(1);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
               border-color 0.3s ease,
               box-shadow 0.3s ease;
 }
 
-.work-card:nth-child(1) { transition-delay: 0.04s; }
-.work-card:nth-child(2) { transition-delay: 0.10s; }
-.work-card:nth-child(3) { transition-delay: 0.16s; }
-.work-card:nth-child(4) { transition-delay: 0.22s; }
+/* โผล่ทีละใบ — delay ชัดขึ้น */
+.work-card:nth-child(1) { transition-delay: 0.05s; }
+.work-card:nth-child(2) { transition-delay: 0.22s; }
+.work-card:nth-child(3) { transition-delay: 0.38s; }
+.work-card:nth-child(4) { transition-delay: 0.54s; }
 
-.work-card.in-view:nth-child(1),
-.work-card.in-view:nth-child(2),
-.work-card.in-view:nth-child(3),
-.work-card.in-view:nth-child(4) {
-  transition-delay: 0s;
-}
+.work-card.in-view:nth-child(1) { transition-delay: 0.05s; }
+.work-card.in-view:nth-child(2) { transition-delay: 0.22s; }
+.work-card.in-view:nth-child(3) { transition-delay: 0.38s; }
+.work-card.in-view:nth-child(4) { transition-delay: 0.54s; }
 
 .work-card:hover {
   border-color: rgba(255, 255, 255, 0.28);
@@ -747,11 +754,22 @@ h1 {
 
 .particle {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 3px;
   height: 3px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.35);
+  will-change: transform;
+}
+
+.particle:not(.physics) {
   animation: floatParticle linear infinite;
+}
+
+.particle.physics {
+  animation: none;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
 }
 
 /* ========== Music Player ========== */

@@ -34,8 +34,8 @@
 
   <!-- Video Background -->
   <div class="video-bg" aria-hidden="true">
-    <video autoplay muted loop playsinline poster="photo.png">
-      <source src="ssstik.io_@soul.blr_1779080280199.mp4" type="video/mp4" />
+    <video id="bgVideo" autoplay muted loop playsinline poster="photo.png">
+      <source src="" type="video/mp4" />
     </video>
   </div>
   <div class="video-overlay" aria-hidden="true"></div>
@@ -58,8 +58,8 @@
   <section class="hero">
     <article class="profile" aria-label="Profile card">
       <div class="banner">
-        <video autoplay muted loop playsinline>
-          <source src="ssstik.io_@soul.blr_1779080280199.mp4" type="video/mp4" />
+        <video id="bannerVideo" autoplay muted loop playsinline>
+          <source src="" type="video/mp4" />
         </video>
         <div class="views-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -229,6 +229,27 @@
   </audio>
 
   <script>
+    /* ========== Random video pair (bg + banner ใช้คลิปเดียวกัน) ========== */
+    (function () {
+      const clips = [
+        'ssstik.io_@soul.blr_1779080280199.mp4',
+        '222.mp4'
+      ];
+      const pick = clips[Math.floor(Math.random() * clips.length)];
+      const bg = document.getElementById('bgVideo');
+      const banner = document.getElementById('bannerVideo');
+      if (bg) {
+        const src = bg.querySelector('source');
+        if (src) src.src = pick;
+        bg.load();
+      }
+      if (banner) {
+        const src = banner.querySelector('source');
+        if (src) src.src = pick;
+        banner.load();
+      }
+    })();
+
     /* ========== Enter gate ========== */
     const enterGate = document.getElementById('enterGate');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -399,7 +420,7 @@
     if (!reduceMotion) setTimeout(typeLoop, 600);
     else if (typedEl) typedEl.textContent = phrases[0];
 
-    /* ========== Name scatter (magnetic letters) ========== */
+    /* ========== Name scatter — spring physics ========== */
     (function () {
       const nameEl = document.getElementById('nameScatter');
       if (!nameEl || reduceMotion || isTouch) return;
@@ -414,18 +435,14 @@
         span.className = 'letter' + (ch === ' ' ? ' space' : '');
         span.textContent = ch === ' ' ? '\u00A0' : ch;
         nameEl.appendChild(span);
-        letters.push({
-          el: span,
-          x: 0,
-          y: 0,
-          tx: 0,
-          ty: 0
-        });
+        letters.push({ el: span, x: 0, y: 0, vx: 0, vy: 0 });
       }
 
-      const RADIUS = 110;      // ระยะที่เริ่มกระจาย
-      const STRENGTH = 36;     // ความแรงดันออก
-      const RETURN = 0.12;     // ความเร็วกลับที่
+      const RADIUS = 120;
+      const STRENGTH = 2.8;
+      const STIFFNESS = 0.08;
+      const DAMPING = 0.78;
+      const MAX_FORCE = 48;
 
       let mouseX = -9999, mouseY = -9999;
       let raf = null;
@@ -444,46 +461,49 @@
 
       function tick() {
         let stillMoving = false;
-
         for (let i = 0; i < letters.length; i++) {
           const L = letters[i];
           if (L.el.classList.contains('space')) continue;
 
           const rect = L.el.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
+          const cx = rect.left + rect.width / 2 - L.x;
+          const cy = rect.top + rect.height / 2 - L.y;
+          const dx = cx + L.x - mouseX;
+          const dy = cy + L.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
 
-          const dx = cx - mouseX;
-          const dy = cy - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < RADIUS && dist > 0.5) {
-            const force = (1 - dist / RADIUS) * STRENGTH;
-            const angle = Math.atan2(dy, dx);
-            L.tx = Math.cos(angle) * force;
-            L.ty = Math.sin(angle) * force;
+          let fx = 0, fy = 0;
+          if (dist < RADIUS) {
+            const t = 1 - dist / RADIUS;
+            const force = Math.min(MAX_FORCE, STRENGTH * t * t * 40);
+            fx = (dx / dist) * force;
+            fy = (dy / dist) * force;
             L.el.classList.add('is-active');
           } else {
-            L.tx = 0;
-            L.ty = 0;
             L.el.classList.remove('is-active');
           }
 
-          L.x += (L.tx - L.x) * RETURN;
-          L.y += (L.ty - L.y) * RETURN;
+          fx += -L.x * STIFFNESS;
+          fy += -L.y * STIFFNESS;
 
-          if (Math.abs(L.x) > 0.08 || Math.abs(L.y) > 0.08 || Math.abs(L.tx) > 0.08) {
+          L.vx = (L.vx + fx) * DAMPING;
+          L.vy = (L.vy + fy) * DAMPING;
+          L.x += L.vx;
+          L.y += L.vy;
+
+          if (Math.abs(L.vx) < 0.02 && Math.abs(L.vy) < 0.02 &&
+              Math.abs(L.x) < 0.15 && Math.abs(L.y) < 0.15) {
+            L.vx = L.vy = 0;
+            L.x = L.y = 0;
+          } else {
             stillMoving = true;
           }
 
           L.el.style.transform = `translate3d(${L.x.toFixed(2)}px, ${L.y.toFixed(2)}px, 0)`;
         }
 
-        if (stillMoving) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          raf = null;
-        }
+        if (stillMoving) raf = requestAnimationFrame(tick);
+        else raf = null;
       }
 
       window.addEventListener('mousemove', onMove, { passive: true });
@@ -758,9 +778,10 @@
         if (src) openLightbox(src, caption);
       });
 
-      // Soft 3D tilt on hover
+      // Soft 3D tilt on hover (after revealed)
       if (!reduceMotion && !isTouch) {
         card.addEventListener('mousemove', (e) => {
+          if (!card.classList.contains('in-view')) return;
           const rect = card.getBoundingClientRect();
           const x = (e.clientX - rect.left) / rect.width;
           const y = (e.clientY - rect.top) / rect.height;
@@ -774,28 +795,90 @@
       }
     });
 
-    /* ========== Scroll reveal ========== */
+    /* ========== Scroll reveal (one-shot rotate-in) ========== */
     const reveals = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        entry.target.classList.toggle('in-view', entry.isIntersecting);
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          // โผล่ครั้งเดียว ไม่ย้อนกลับ
+          io.unobserve(entry.target);
+        }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.18, rootMargin: '0px 0px -60px 0px' });
     reveals.forEach((el) => io.observe(el));
 
-    /* ========== Floating particles ========== */
-    const particlesEl = document.getElementById('particles');
-    const count = reduceMotion ? 0 : 18;
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('span');
-      p.className = 'particle';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.animationDuration = (12 + Math.random() * 18) + 's';
-      p.style.animationDelay = (Math.random() * -20) + 's';
-      p.style.width = p.style.height = (1.5 + Math.random() * 2.5) + 'px';
-      p.style.opacity = 0.2 + Math.random() * 0.4;
-      particlesEl.appendChild(p);
-    }
+    /* ========== Physics particles (soft mouse repulsion) ========== */
+    (function () {
+      const particlesEl = document.getElementById('particles');
+      if (!particlesEl || reduceMotion) return;
+
+      const COUNT = isTouch ? 10 : 22;
+      const particles = [];
+      const W = () => window.innerWidth;
+      const H = () => window.innerHeight;
+
+      for (let i = 0; i < COUNT; i++) {
+        const el = document.createElement('span');
+        el.className = 'particle physics';
+        const size = 1.6 + Math.random() * 2.8;
+        el.style.width = el.style.height = size + 'px';
+        el.style.opacity = 0.18 + Math.random() * 0.42;
+        particlesEl.appendChild(el);
+        particles.push({
+          el,
+          x: Math.random() * W(),
+          y: Math.random() * H(),
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: -0.15 - Math.random() * 0.35,
+          size
+        });
+      }
+
+      let mx = -9999, my = -9999;
+      const RADIUS = 140;
+      const REPEL = 1.8;
+
+      if (!isTouch) {
+        window.addEventListener('mousemove', (e) => {
+          mx = e.clientX;
+          my = e.clientY;
+        }, { passive: true });
+      }
+
+      function loop() {
+        const w = W(), h = H();
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          const dx = p.x - mx;
+          const dy = p.y - my;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+          if (dist < RADIUS) {
+            const t = 1 - dist / RADIUS;
+            const f = REPEL * t * t;
+            p.vx += (dx / dist) * f;
+            p.vy += (dy / dist) * f;
+          }
+          p.vy -= 0.004;
+          p.vx += (Math.random() - 0.5) * 0.02;
+          p.vx *= 0.97;
+          p.vy *= 0.97;
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.y < -20) {
+            p.y = h + 10;
+            p.x = Math.random() * w;
+            p.vx = (Math.random() - 0.5) * 0.3;
+            p.vy = -0.2 - Math.random() * 0.3;
+          }
+          if (p.x < -20) p.x = w + 10;
+          if (p.x > w + 20) p.x = -10;
+          p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
+        }
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
 
     /* Hide scroll hint */
     const hint = document.querySelector('.scroll-hint');
