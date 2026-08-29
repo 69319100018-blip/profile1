@@ -110,6 +110,11 @@
               <path class="wave" d="M7 9.2c3.4-1 7.2-.7 10.1.6M7.8 12.2c2.8-.7 5.9-.5 8.3.5M8.7 15c2.1-.4 4.4-.2 6.3.5"/>
             </svg>
           </a>
+          <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener noreferrer" aria-label="Steam" data-toast="เปิด Steam">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11.979 0C5.678 0 .511 4.86.022 11.19l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.962 20.607 6.53 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0zM7.544 18.21l-1.473-.608c.268.789.979 1.357 1.849 1.357 1.061 0 1.923-.865 1.923-1.923 0-.849-.583-1.563-1.369-1.799l1.523.628c.831.343 1.246 1.295.902 2.126-.343.831-1.294 1.247-2.125.902-.03-.012-.06-.027-.09-.042.0.0.0.0.0.0zm9.491-7.453c-1.666 0-3.018-1.352-3.018-3.019 0-1.666 1.352-3.018 3.018-3.018 1.667 0 3.019 1.352 3.019 3.018 0 1.667-1.352 3.019-3.019 3.019zm0-5.009c-1.1 0-1.99.889-1.99 1.99 0 1.1.89 1.991 1.99 1.991s1.991-.891 1.991-1.991c0-1.101-.891-1.99-1.991-1.99z"/>
+            </svg>
+          </a>
           <button class="share-btn" id="shareBtn" aria-label="Copy link" title="คัดลอกลิงก์" data-toast="คัดลอกลิงก์แล้ว">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
@@ -880,11 +885,12 @@
       loop();
     })();
 
-    /* Hide scroll hint */
+    /* Hide scroll hint (เร็วขึ้นบนมือถือ เพื่อไม่ทับ player) */
     const hint = document.querySelector('.scroll-hint');
     let hintHidden = false;
+    const hintHideAt = window.matchMedia('(max-width: 580px)').matches ? 36 : 80;
     window.addEventListener('scroll', () => {
-      if (!hintHidden && window.scrollY > 80) {
+      if (!hintHidden && window.scrollY > hintHideAt) {
         hint.style.opacity = '0';
         hint.style.transition = 'opacity 0.4s ease';
         hintHidden = true;

@@ -274,7 +274,7 @@ body.cursor-hover .cursor-glow {
 }
 
 .profile {
-  width: min(100%, 540px);
+  width: min(100%, 786px);
   border-radius: 24px;
   background: var(--panel);
   border: 1px solid var(--line);
@@ -554,6 +554,11 @@ h1 {
   stroke: #0a0a0a;
   stroke-width: 1.6;
   stroke-linecap: round;
+}
+
+.socials a[aria-label="Steam"] svg {
+  width: 17px;
+  height: 17px;
 }
 
 /* Scroll hint */
@@ -1210,53 +1215,185 @@ h1 {
 }
 
 /* ========== Responsive ========== */
+
+/* Safe area (notch / home indicator) */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .hero {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+
+  .site-footer {
+    padding-bottom: max(40px, calc(24px + env(safe-area-inset-bottom)));
+  }
+}
+
+/* Tablet / mid screens */
+@media (max-width: 900px) {
+  .hero {
+    padding: 40px 18px 72px;
+  }
+
+  .works {
+    padding: 32px 18px 32px;
+  }
+}
+
+/* Phone */
 @media (max-width: 580px) {
   .hero {
-    padding: 32px 14px 110px;
+    padding: 28px 12px 100px;
+    min-height: 100svh;
   }
 
   .profile {
     border-radius: 18px;
+    width: 100%;
   }
 
   .banner {
-    height: 130px;
+    height: 120px;
   }
 
   .profile-body {
-    padding: 0 20px 22px;
+    padding: 0 16px 20px;
   }
 
   .avatar {
-    width: 84px;
-    height: 84px;
+    width: 80px;
+    height: 80px;
+    border-width: 3px;
   }
 
   .avatar-row {
-    margin-top: -42px;
+    margin-top: -40px;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
   h1 {
-    font-size: 24px;
+    font-size: clamp(20px, 5.5vw, 24px);
+  }
+
+  .status-pill {
+    font-size: 10.5px;
+    padding: 2px 8px 2px 6px;
+  }
+
+  .greeting {
+    font-size: 11px;
+  }
+
+  .tagline {
+    font-size: 13px;
+  }
+
+  .bio {
+    font-size: 13.5px;
+    margin: 12px 0 16px;
+  }
+
+  .socials {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .socials a,
+  .share-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .socials svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .socials a[aria-label="Steam"] svg {
+    width: 15px;
+    height: 15px;
   }
 
   .scroll-hint {
-    bottom: 78px;
+    bottom: max(100px, calc(72px + env(safe-area-inset-bottom, 0px)));
+    font-size: 10px;
+  }
+
+  .scroll-hint svg {
+    width: 16px;
+    height: 16px;
   }
 
   .works {
-    padding: 24px 14px 24px;
+    padding: 20px 12px 24px;
+  }
+
+  .works-header {
+    margin-bottom: 24px;
+  }
+
+  .works-header h2 {
+    font-size: clamp(18px, 5vw, 24px);
+  }
+
+  .works-header p {
+    font-size: 12.5px;
+  }
+
+  .works-grid {
+    gap: 14px;
+  }
+
+  .work-info {
+    padding: 12px 14px 14px;
+  }
+
+  .work-info h3 {
+    font-size: 14.5px;
+  }
+
+  .work-info p {
+    font-size: 12px;
   }
 
   .player {
-    margin-top: 18px;
-    padding: 9px 10px 9px 9px;
-    gap: 10px;
+    margin-top: 16px;
+    padding: 8px 8px 8px 8px;
+    gap: 8px;
+    border-radius: 12px;
   }
 
   .player-cover {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+  }
+
+  .player-title {
+    font-size: 12px;
+  }
+
+  .player-artist {
+    font-size: 10.5px;
+  }
+
+  .time {
+    font-size: 9.5px;
+    min-width: 26px;
+  }
+
+  .progress-wrap {
+    gap: 6px;
+  }
+
+  .ctrl-btn {
+    width: 32px;
+    height: 32px;
   }
 
   .ctrl-btn.play-btn {
@@ -1264,18 +1401,206 @@ h1 {
     height: 36px;
   }
 
-  .vol-wrap:hover .vol-slider,
-  .vol-slider:focus {
-    width: 44px;
+  .ctrl-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .vol-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* มือถือ: แสดง volume slider ตลอด (ไม่มี hover) */
+  .vol-wrap .vol-slider {
+    width: 40px;
+    opacity: 0.85;
+  }
+
+  .lyrics-snippet {
+    font-size: 10px;
+  }
+
+  .viz {
+    height: 10px;
+  }
+
+  .enter-avatar {
+    width: 92px;
+    height: 92px;
+  }
+
+  .enter-name {
+    font-size: clamp(24px, 6vw, 32px);
+  }
+
+  .lightbox {
+    padding: 56px 12px 24px;
+  }
+
+  .lightbox img {
+    max-width: 94vw;
+    max-height: 72vh;
+    border-radius: 10px;
   }
 
   .lightbox-close {
-    top: 12px;
-    right: 14px;
+    top: max(10px, env(safe-area-inset-top, 10px));
+    right: max(12px, env(safe-area-inset-right, 12px));
+    width: 40px;
+    height: 40px;
+  }
+
+  .lightbox-caption {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  .toast {
+    bottom: max(20px, calc(16px + env(safe-area-inset-bottom, 0px)));
+    font-size: 12px;
+    padding: 9px 16px;
+    max-width: calc(100vw - 32px);
   }
 
   .site-footer {
-    padding: 20px 14px 32px;
+    padding: 18px 12px max(28px, calc(20px + env(safe-area-inset-bottom, 0px)));
+    font-size: 11px;
+  }
+
+  .views-badge {
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .hero {
+    padding: 20px 10px 88px;
+  }
+
+  .banner {
+    height: 100px;
+  }
+
+  .profile-body {
+    padding: 0 12px 16px;
+  }
+
+  .avatar {
+    width: 70px;
+    height: 70px;
+    border-width: 2.5px;
+  }
+
+  .avatar-row {
+    margin-top: -34px;
+    gap: 10px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  .bio {
+    font-size: 13px;
+  }
+
+  .socials {
+    gap: 6px;
+  }
+
+  .socials a,
+  .share-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .player {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .player-cover {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player-info {
+    flex: 1 1 calc(100% - 100px);
+    min-width: 0;
+  }
+
+  .player-controls {
+    margin-left: auto;
+  }
+
+  .vol-wrap .vol-slider {
+    width: 36px;
+  }
+
+  .scroll-hint {
+    bottom: 88px;
+  }
+}
+
+/* Short landscape phones */
+@media (max-height: 480px) and (orientation: landscape) {
+  .hero {
+    min-height: auto;
+    padding: 20px 16px 48px;
+  }
+
+  .banner {
+    height: 90px;
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .avatar-row {
+    margin-top: -32px;
+  }
+
+  .scroll-hint {
+    display: none;
+  }
+
+  .enter-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .enter-inner {
+    gap: 12px;
+  }
+}
+
+/* Touch devices: slightly larger hit targets, no hover lift quirks */
+@media (hover: none), (pointer: coarse) {
+  .socials a,
+  .share-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .socials a:hover,
+  .share-btn:hover {
+    transform: none;
+  }
+
+  .ctrl-btn:hover {
+    transform: none;
+  }
+
+  .vol-wrap .vol-slider {
+    width: 48px;
+    opacity: 0.9;
   }
 }
 
