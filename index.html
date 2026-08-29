@@ -76,7 +76,7 @@
             <img src="photo.png" alt="prasitchok" />
           </div>
           <div class="name-block">
-            <h1>talos blackagency</h1>
+            <h1 class="name-scatter" id="nameScatter" aria-label="talos blackagency">talos blackagency</h1>
             <p class="status-pill" id="statusPill">
               <span class="status-dot"></span>
               <span id="statusText">online · quiet</span>
@@ -398,6 +398,97 @@
     }
     if (!reduceMotion) setTimeout(typeLoop, 600);
     else if (typedEl) typedEl.textContent = phrases[0];
+
+    /* ========== Name scatter (magnetic letters) ========== */
+    (function () {
+      const nameEl = document.getElementById('nameScatter');
+      if (!nameEl || reduceMotion || isTouch) return;
+
+      const text = nameEl.textContent.trim();
+      nameEl.textContent = '';
+      const letters = [];
+
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const span = document.createElement('span');
+        span.className = 'letter' + (ch === ' ' ? ' space' : '');
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        nameEl.appendChild(span);
+        letters.push({
+          el: span,
+          x: 0,
+          y: 0,
+          tx: 0,
+          ty: 0
+        });
+      }
+
+      const RADIUS = 110;      // ระยะที่เริ่มกระจาย
+      const STRENGTH = 36;     // ความแรงดันออก
+      const RETURN = 0.12;     // ความเร็วกลับที่
+
+      let mouseX = -9999, mouseY = -9999;
+      let raf = null;
+
+      function onMove(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      function onLeave() {
+        mouseX = -9999;
+        mouseY = -9999;
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      function tick() {
+        let stillMoving = false;
+
+        for (let i = 0; i < letters.length; i++) {
+          const L = letters[i];
+          if (L.el.classList.contains('space')) continue;
+
+          const rect = L.el.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+
+          const dx = cx - mouseX;
+          const dy = cy - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < RADIUS && dist > 0.5) {
+            const force = (1 - dist / RADIUS) * STRENGTH;
+            const angle = Math.atan2(dy, dx);
+            L.tx = Math.cos(angle) * force;
+            L.ty = Math.sin(angle) * force;
+            L.el.classList.add('is-active');
+          } else {
+            L.tx = 0;
+            L.ty = 0;
+            L.el.classList.remove('is-active');
+          }
+
+          L.x += (L.tx - L.x) * RETURN;
+          L.y += (L.ty - L.y) * RETURN;
+
+          if (Math.abs(L.x) > 0.08 || Math.abs(L.y) > 0.08 || Math.abs(L.tx) > 0.08) {
+            stillMoving = true;
+          }
+
+          L.el.style.transform = `translate3d(${L.x.toFixed(2)}px, ${L.y.toFixed(2)}px, 0)`;
+        }
+
+        if (stillMoving) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          raf = null;
+        }
+      }
+
+      window.addEventListener('mousemove', onMove, { passive: true });
+      nameEl.addEventListener('mouseleave', onLeave);
+    })();
 
     /* ========== Music player ========== */
     const audio = document.getElementById('audio');

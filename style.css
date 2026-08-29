@@ -389,6 +389,31 @@ h1 {
   margin-bottom: 4px;
 }
 
+/* Name scatter letters */
+.name-scatter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  cursor: default;
+}
+
+.name-scatter .letter {
+  display: inline-block;
+  position: relative;
+  will-change: transform;
+  transition: color 0.3s ease;
+  transform: translate3d(0, 0, 0);
+}
+
+.name-scatter .letter.space {
+  width: 0.28em;
+}
+
+.name-scatter .letter.is-active {
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+}
+
 /* Status pill */
 .status-pill {
   display: inline-flex;
