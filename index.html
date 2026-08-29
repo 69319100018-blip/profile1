@@ -9,7 +9,29 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="locked">
+  <!-- Enter gate -->
+  <div class="enter-gate" id="enterGate" role="button" tabindex="0" aria-label="คลิกเพื่อเข้าสู่โปรไฟล์">
+    <div class="enter-inner">
+      <div class="enter-avatar">
+        <img src="photo.png" alt="" />
+      </div>
+      <h2 class="enter-name">MONEY</h2>
+      <p class="enter-hint">
+        <span class="enter-pulse"></span>
+        click to enter
+      </p>
+    </div>
+  </div>
+
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Soft custom cursor + trail -->
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+  <div class="cursor-trail" id="cursorTrail" aria-hidden="true"></div>
+
   <!-- Video Background -->
   <div class="video-bg" aria-hidden="true">
     <video autoplay muted loop playsinline poster="photo.png">
@@ -19,8 +41,18 @@
   <div class="video-overlay" aria-hidden="true"></div>
   <div class="noise" aria-hidden="true"></div>
 
-  <!-- Floating particles (always animating) -->
+  <!-- Floating particles -->
   <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="ดูรูปขนาดใหญ่" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="ปิด">&times;</button>
+    <img id="lightboxImg" src="" alt="" />
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
 
   <!-- ========== HERO / PROFILE ========== -->
   <section class="hero">
@@ -44,40 +76,51 @@
             <img src="photo.png" alt="prasitchok" />
           </div>
           <div class="name-block">
-            <h1>talos</h1>
-            <p class="tagline">quiet soul · soft nights</p>
+            <h1>talos blackagency</h1>
+            <p class="status-pill" id="statusPill">
+              <span class="status-dot"></span>
+              <span id="statusText">online · quiet</span>
+            </p>
+            <p class="greeting" id="greeting" aria-live="polite"></p>
+            <p class="tagline" id="tagline"><span class="typed"></span><span class="caret">|</span></p>
           </div>
         </div>
 
         <p class="bio">
-          ดูๆไปก่อน ตอนนี้คิดอะไรไม่ออก<br />
-          
+          เก็บความเงียบไว้ในใจ<br />
+           ปลดปล่อยเมื่อยามจำป็น
         </p>
 
         <nav class="socials" aria-label="Social links">
-          <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram" data-toast="เปิด Instagram">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="3" y="3" width="18" height="18" rx="5"/>
               <circle cx="12" cy="12" r="4"/>
               <circle cx="17.5" cy="6.5" r="1.15"/>
             </svg>
           </a>
-          <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener noreferrer" aria-label="Facebook" data-toast="เปิด Facebook">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H8v3h3v7h3v-7h3l1-3h-4V9c0-.6.4-1 1-1z"/>
             </svg>
           </a>
-          <a href="https://open.spotify.com/user/315b37264nlsnpndjd7tzvykpffi?si=e87f2262fc4d4c30" target="_blank" rel="noopener noreferrer" aria-label="Spotify">
+          <a href="https://open.spotify.com/user/315b37264nlsnpndjd7tzvykpffi?si=e87f2262fc4d4c30" target="_blank" rel="noopener noreferrer" aria-label="Spotify" data-toast="เปิด Spotify">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="10"/>
               <path class="wave" d="M7 9.2c3.4-1 7.2-.7 10.1.6M7.8 12.2c2.8-.7 5.9-.5 8.3.5M8.7 15c2.1-.4 4.4-.2 6.3.5"/>
             </svg>
           </a>
+          <button class="share-btn" id="shareBtn" aria-label="Copy link" title="คัดลอกลิงก์" data-toast="คัดลอกลิงก์แล้ว">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+            </svg>
+          </button>
         </nav>
 
-        <!-- Music player locked under bio -->
+        <!-- Music player -->
         <div class="player" role="region" aria-label="Music player">
-          <div class="player-cover">
+          <div class="player-cover" id="playerCover">
             <img src="photo.png" alt="" />
           </div>
           <div class="player-info">
@@ -87,17 +130,26 @@
             </div>
             <div class="progress-wrap">
               <span class="time" id="currentTime">0:00</span>
-              <div class="progress" id="progress" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="progress" id="progress" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
                 <div class="progress-bar" id="progressBar"></div>
               </div>
               <span class="time end" id="duration">3:44</span>
             </div>
+            <!-- Simple visualizer -->
+            <div class="viz" id="viz" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <!-- Lyrics snippet -->
+            <p class="lyrics-snippet" id="lyricsSnippet" aria-live="polite"></p>
           </div>
           <div class="player-controls">
-            <button class="ctrl-btn vol-btn" id="muteBtn" aria-label="Mute / Unmute" title="ปิดเสียง">
-              <svg id="volIcon" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5zm7.07 1.93a9 9 0 0 1 0 10.14M15.54 8.46a5 5 0 0 1 0 7.08"/></svg>
-            </button>
-            <button class="ctrl-btn play-btn" id="playBtn" aria-label="Play / Pause" title="เล่น / หยุด">
+            <div class="vol-wrap">
+              <button class="ctrl-btn vol-btn" id="muteBtn" aria-label="Mute / Unmute" title="ปิดเสียง">
+                <svg id="volIcon" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5zm7.07 1.93a9 9 0 0 1 0 10.14M15.54 8.46a5 5 0 0 1 0 7.08"/></svg>
+              </button>
+              <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.02" value="0.7" aria-label="Volume" />
+            </div>
+            <button class="ctrl-btn play-btn" id="playBtn" aria-label="Play / Pause" title="เล่น / หยุด (Space)">
               <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
@@ -121,32 +173,29 @@
     </header>
 
     <div class="works-grid">
-      <!-- Clip 1 -->
-      <article class="work-card reveal">
+      <article class="work-card reveal" data-full="image.png" data-caption="Light City · night drive">
         <div class="work-media">
-          <img src="image.png" alt="talos" loading="lazy" />
+          <img src="image.png" alt="FiveM Light City" loading="lazy" />
         </div>
         <div class="work-info">
           <h3></h3>
-          <p>character · still</p>
-          <span class="work-tag">Art</span>
+          <p>FiveM by Cfx.re · frame capture</p>
+          <span class="work-tag">Screenshot</span>
         </div>
       </article>
 
-      <!-- Clip 2 -->
-      <article class="work-card reveal">
+      <article class="work-card reveal" data-full="image1.png" data-caption="Talos · character still">
         <div class="work-media">
           <img src="image1.png" alt="talos" loading="lazy" />
         </div>
         <div class="work-info">
           <h3></h3>
-          <p>character · still</p>
+          <p>character · still frame</p>
           <span class="work-tag">Art</span>
         </div>
       </article>
 
-      <!-- Light City still -->
-      <article class="work-card reveal">
+      <article class="work-card reveal" data-full="work-lightcity.png" data-caption="Light City · street lights">
         <div class="work-media">
           <img src="work-lightcity.png" alt="FiveM Light City" loading="lazy" />
         </div>
@@ -157,8 +206,7 @@
         </div>
       </article>
 
-      <!-- talos -->
-      <article class="work-card reveal">
+      <article class="work-card reveal" data-full="talos.png" data-caption="Talos · portrait">
         <div class="work-media">
           <img src="talos.png" alt="talos" loading="lazy" />
         </div>
@@ -168,35 +216,315 @@
           <span class="work-tag">Art</span>
         </div>
       </article>
-
+    </div>
   </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2026 talos blackagency · soft nights only</p>
+  </footer>
 
   <audio id="audio" preload="metadata" loop>
     <source src="Twenty One Pilots - Drag Path (Lyrics).mp3" type="audio/mpeg" />
   </audio>
 
   <script>
-    /* ----- Music player ----- */
+    /* ========== Enter gate ========== */
+    const enterGate = document.getElementById('enterGate');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
+
+    function enterSite() {
+      if (!document.body.classList.contains('locked')) return;
+      document.body.classList.remove('locked');
+      document.body.classList.add('entered');
+      enterGate.classList.add('fade-out');
+      setTimeout(() => {
+        enterGate.style.display = 'none';
+      }, reduceMotion ? 0 : 700);
+    }
+
+    if (enterGate) {
+      enterGate.addEventListener('click', enterSite);
+      enterGate.addEventListener('keydown', (e) => {
+        if (e.code === 'Enter' || e.code === 'Space') {
+          e.preventDefault();
+          enterSite();
+        }
+      });
+    }
+
+    /* ========== Soft custom cursor + trail ========== */
+    const cursor = document.getElementById('cursor');
+    const cursorGlow = document.getElementById('cursorGlow');
+    const cursorTrail = document.getElementById('cursorTrail');
+
+    if (!isTouch && !reduceMotion) {
+      document.body.classList.add('has-custom-cursor');
+      let cx = 0, cy = 0, gx = 0, gy = 0;
+      const trailDots = [];
+      const TRAIL_COUNT = 10;
+
+      for (let i = 0; i < TRAIL_COUNT; i++) {
+        const d = document.createElement('span');
+        d.className = 'trail-dot';
+        d.style.opacity = String(0.35 * (1 - i / TRAIL_COUNT));
+        d.style.width = d.style.height = (5 - i * 0.28) + 'px';
+        cursorTrail.appendChild(d);
+        trailDots.push({ el: d, x: 0, y: 0 });
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        cx = e.clientX;
+        cy = e.clientY;
+        cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      }, { passive: true });
+
+      function glowLoop() {
+        gx += (cx - gx) * 0.12;
+        gy += (cy - gy) * 0.12;
+        cursorGlow.style.transform = `translate3d(${gx}px, ${gy}px, 0)`;
+
+        let px = cx, py = cy;
+        for (let i = 0; i < trailDots.length; i++) {
+          const d = trailDots[i];
+          d.x += (px - d.x) * (0.28 - i * 0.018);
+          d.y += (py - d.y) * (0.28 - i * 0.018);
+          d.el.style.transform = `translate3d(${d.x}px, ${d.y}px, 0)`;
+          px = d.x;
+          py = d.y;
+        }
+        requestAnimationFrame(glowLoop);
+      }
+      glowLoop();
+
+      document.querySelectorAll('a, button, .work-card, .progress, .ctrl-btn, .vol-slider, .share-btn').forEach((el) => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+      });
+    }
+
+    /* ========== Time-of-day greeting ========== */
+    (function () {
+      const el = document.getElementById('greeting');
+      if (!el) return;
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function updateGreeting() {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        let phrase = 'good evening';
+        if (h >= 5 && h < 12) phrase = 'good morning';
+        else if (h >= 12 && h < 17) phrase = 'good afternoon';
+        else if (h >= 17 && h < 21) phrase = 'good evening';
+        else phrase = 'good night';
+        el.textContent = phrase + ' · ' + pad(h) + ':' + pad(m);
+      }
+      updateGreeting();
+      setInterval(updateGreeting, 30000);
+    })();
+
+    /* ========== Toast ========== */
+    const toastEl = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    document.querySelectorAll('.socials a').forEach((a) => {
+      a.addEventListener('click', () => {
+        const msg = a.getAttribute('data-toast') || 'เปิดลิงก์';
+        showToast(msg);
+      });
+    });
+
+    /* ========== Share / Copy link ========== */
+    const shareBtn = document.getElementById('shareBtn');
+    shareBtn.addEventListener('click', async () => {
+      const url = window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast('คัดลอกลิงก์แล้ว ✓');
+      } catch {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast('คัดลอกลิงก์แล้ว ✓');
+        } catch {
+          showToast('คัดลอกไม่สำเร็จ');
+        }
+        document.body.removeChild(ta);
+      }
+    });
+
+    /* ========== Typing effect (tagline) ========== */
+    const typedEl = document.querySelector('.typed');
+    const caretEl = document.querySelector('.caret');
+    const phrases = ['quiet soul · soft nights', 'เก็บความเงียบไว้', 'slow songs · blurry lights'];
+    let phraseIdx = 0, charIdx = 0, deleting = false;
+
+    function typeLoop() {
+      if (!typedEl) return;
+      const current = phrases[phraseIdx];
+      if (!deleting) {
+        typedEl.textContent = current.slice(0, charIdx + 1);
+        charIdx++;
+        if (charIdx === current.length) {
+          deleting = true;
+          setTimeout(typeLoop, 1800);
+          return;
+        }
+        setTimeout(typeLoop, 70 + Math.random() * 40);
+      } else {
+        typedEl.textContent = current.slice(0, charIdx - 1);
+        charIdx--;
+        if (charIdx === 0) {
+          deleting = false;
+          phraseIdx = (phraseIdx + 1) % phrases.length;
+          setTimeout(typeLoop, 400);
+          return;
+        }
+        setTimeout(typeLoop, 35);
+      }
+    }
+    if (!reduceMotion) setTimeout(typeLoop, 600);
+    else if (typedEl) typedEl.textContent = phrases[0];
+
+    /* ========== Music player ========== */
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('playBtn');
     const playIcon = document.getElementById('playIcon');
     const muteBtn = document.getElementById('muteBtn');
     const volIcon = document.getElementById('volIcon');
+    const volSlider = document.getElementById('volSlider');
     const progress = document.getElementById('progress');
     const progressBar = document.getElementById('progressBar');
     const currentTimeEl = document.getElementById('currentTime');
     const durationEl = document.getElementById('duration');
+    const playerCover = document.getElementById('playerCover');
+    const viz = document.getElementById('viz');
+    const lyricsSnippet = document.getElementById('lyricsSnippet');
+    const statusText = document.getElementById('statusText');
+    const statusPill = document.getElementById('statusPill');
 
     const playSvg = '<path d="M8 5v14l11-7z"/>';
     const pauseSvg = '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
     const volOnSvg = '<path d="M11 5L6 9H2v6h4l5 4V5zm7.07 1.93a9 9 0 0 1 0 10.14M15.54 8.46a5 5 0 0 1 0 7.08"/>';
     const volOffSvg = '<path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/>';
+    const volLowSvg = '<path d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 0 1 0 7.08"/>';
+
+    // Time-synced lyrics (~3:44 local file)
+    const lyricsTimeline = [
+      { t: 0,   text: '' },
+      { t: 12,  text: "When I see the devil's eyes" },
+      { t: 16,  text: "I'll look away and smile wide" },
+      { t: 20,  text: 'You found me' },
+      { t: 24,  text: "Then I'll know you're also there" },
+      { t: 28,  text: "'Cause proof is in the adversaire" },
+      { t: 33,  text: 'You found me' },
+      { t: 38,  text: 'A drag path etched in the surface' },
+      { t: 42,  text: 'As evidence I left there on purpose' },
+      { t: 47,  text: 'A sad sap laying on the surface' },
+      { t: 51,  text: 'Can you find me?' },
+      { t: 56,  text: "When I see the devil's eyes" },
+      { t: 60,  text: 'A current travels down my spine' },
+      { t: 65,  text: 'You found me' },
+      { t: 70,  text: 'A drag path etched in the surface' },
+      { t: 74,  text: 'As evidence I left there on purpose' },
+      { t: 79,  text: 'A sad sap laying on the surface' },
+      { t: 83,  text: 'Can you find me?' },
+      { t: 88,  text: 'I dug my heels into the gravel' },
+      { t: 93,  text: 'As evidence for you to unravel' },
+      { t: 98,  text: 'A drag path etched in the surface' },
+      { t: 103, text: 'Can you find me?' },
+      { t: 130, text: 'Can you, can you, can you, can you?' },
+      { t: 138, text: 'A drag path etched in the surface' },
+      { t: 142, text: 'As evidence I left there on purpose' },
+      { t: 147, text: 'A sad sap laying on the surface' },
+      { t: 151, text: 'Can you find me?' },
+      { t: 156, text: 'I dug my heels into the gravel' },
+      { t: 161, text: 'As evidence for you to unravel' },
+      { t: 166, text: 'A drag path etched in the surface' },
+      { t: 171, text: 'Can you find me?' },
+      { t: 178, text: 'Can you find me?' },
+      { t: 183, text: 'Can you find me?' },
+      { t: 188, text: 'Can you find me?' },
+      { t: 193, text: 'Can you find me?' },
+      { t: 210, text: '' }
+    ];
+    let lastLyricText = null;
+
+    function updateLyrics() {
+      if (!lyricsSnippet || audio.paused) return;
+      const t = audio.currentTime;
+      let line = '';
+      for (let i = lyricsTimeline.length - 1; i >= 0; i--) {
+        if (t >= lyricsTimeline[i].t) {
+          line = lyricsTimeline[i].text;
+          break;
+        }
+      }
+      if (line !== lastLyricText) {
+        lastLyricText = line;
+        if (!line) {
+          lyricsSnippet.classList.remove('show');
+          setTimeout(() => { if (!lastLyricText) lyricsSnippet.textContent = ''; }, 280);
+        } else {
+          lyricsSnippet.classList.remove('show');
+          setTimeout(() => {
+            if (lastLyricText === line) {
+              lyricsSnippet.textContent = line;
+              lyricsSnippet.classList.add('show');
+            }
+          }, 160);
+        }
+      }
+    }
+
+    function stopLyrics() {
+      lastLyricText = null;
+      if (lyricsSnippet) {
+        lyricsSnippet.classList.remove('show');
+        setTimeout(() => { lyricsSnippet.textContent = ''; }, 280);
+      }
+    }
 
     function formatTime(s) {
       if (!isFinite(s)) return '0:00';
       const m = Math.floor(s / 60);
       const sec = Math.floor(s % 60);
       return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    function updateVolIcon(vol, muted) {
+      if (muted || vol === 0) {
+        volIcon.innerHTML = volOffSvg;
+      } else if (vol < 0.45) {
+        volIcon.innerHTML = volLowSvg;
+      } else {
+        volIcon.innerHTML = volOnSvg;
+      }
+    }
+
+    // Init volume
+    audio.volume = parseFloat(volSlider.value);
+    updateVolIcon(audio.volume, audio.muted);
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play().catch(() => {});
+      } else {
+        audio.pause();
+      }
     }
 
     audio.addEventListener('loadedmetadata', () => {
@@ -209,77 +537,164 @@
       progressBar.style.width = pct + '%';
       progress.setAttribute('aria-valuenow', Math.round(pct));
       currentTimeEl.textContent = formatTime(audio.currentTime);
+      updateLyrics();
     });
 
-    playBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play().catch(() => {});
-      } else {
-        audio.pause();
-      }
-    });
+    playBtn.addEventListener('click', togglePlay);
 
     muteBtn.addEventListener('click', () => {
       audio.muted = !audio.muted;
-      volIcon.innerHTML = audio.muted ? volOffSvg : volOnSvg;
+      updateVolIcon(audio.volume, audio.muted);
       muteBtn.setAttribute('aria-label', audio.muted ? 'Unmute' : 'Mute');
+      showToast(audio.muted ? 'ปิดเสียง' : 'เปิดเสียง');
     });
+
+    volSlider.addEventListener('input', () => {
+      const v = parseFloat(volSlider.value);
+      audio.volume = v;
+      if (v > 0 && audio.muted) {
+        audio.muted = false;
+      }
+      updateVolIcon(v, audio.muted);
+    });
+
+    /* Drag + click seek */
+    let seeking = false;
+    function seekFromEvent(e) {
+      const rect = progress.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      if (audio.duration) {
+        audio.currentTime = x * audio.duration;
+        progressBar.style.width = (x * 100) + '%';
+        lastLyricText = null;
+        updateLyrics();
+      }
+    }
+
+    progress.addEventListener('mousedown', (e) => {
+      seeking = true;
+      seekFromEvent(e);
+      e.preventDefault();
+    });
+    progress.addEventListener('touchstart', (e) => {
+      seeking = true;
+      seekFromEvent(e);
+    }, { passive: true });
+
+    window.addEventListener('mousemove', (e) => { if (seeking) seekFromEvent(e); });
+    window.addEventListener('touchmove', (e) => { if (seeking) seekFromEvent(e); }, { passive: true });
+    window.addEventListener('mouseup', () => { seeking = false; });
+    window.addEventListener('touchend', () => { seeking = false; });
 
     progress.addEventListener('click', (e) => {
-      const rect = progress.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      if (audio.duration) audio.currentTime = Math.max(0, Math.min(1, x)) * audio.duration;
+      if (!seeking) seekFromEvent(e);
     });
 
-    audio.addEventListener('pause', () => { playIcon.innerHTML = playSvg; });
-    audio.addEventListener('play', () => { playIcon.innerHTML = pauseSvg; });
+    /* Spacebar play/pause */
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !e.repeat) {
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
+        e.preventDefault();
+        togglePlay();
+      }
+      if (e.code === 'Escape') closeLightbox();
+    });
 
-    /* ----- Scroll reveal ----- */
+    audio.addEventListener('pause', () => {
+      playIcon.innerHTML = playSvg;
+      playerCover.classList.remove('spinning');
+      viz.classList.remove('active');
+      stopLyrics();
+      statusText.textContent = 'online · quiet';
+      statusPill.classList.remove('listening');
+    });
+    audio.addEventListener('play', () => {
+      playIcon.innerHTML = pauseSvg;
+      playerCover.classList.add('spinning');
+      viz.classList.add('active');
+      lastLyricText = null; // force refresh on resume/seek
+      updateLyrics();
+      statusText.textContent = 'online · listening';
+      statusPill.classList.add('listening');
+    });
+
+    /* ========== Scroll progress bar ========== */
+    const scrollProgress = document.getElementById('scrollProgress');
+    function updateScrollProgress() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      scrollProgress.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    updateScrollProgress();
+
+    /* ========== Lightbox ========== */
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    function openLightbox(src, caption) {
+      lightboxImg.src = src;
+      lightboxCaption.textContent = caption || '';
+      lightbox.hidden = false;
+      requestAnimationFrame(() => lightbox.classList.add('open'));
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      setTimeout(() => {
+        lightbox.hidden = true;
+        lightboxImg.src = '';
+        document.body.style.overflow = '';
+      }, 280);
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.querySelectorAll('.work-card').forEach((card) => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => {
+        const src = card.getAttribute('data-full') || card.querySelector('img')?.src;
+        const caption = card.getAttribute('data-caption') || card.querySelector('h3')?.textContent || '';
+        if (src) openLightbox(src, caption);
+      });
+
+      // Soft 3D tilt on hover
+      if (!reduceMotion && !isTouch) {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const rotY = (x - 0.5) * 12;
+          const rotX = (0.5 - y) * 10;
+          card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+        });
+      }
+    });
+
+    /* ========== Scroll reveal ========== */
     const reveals = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        }
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
     reveals.forEach((el) => io.observe(el));
 
-    /* ----- Work videos: play on hover / click ----- */
-    document.querySelectorAll('.work-card[data-video]').forEach((card) => {
-      const vid = card.querySelector('video');
-      if (!vid) return;
-
-      const syncPlaying = () => {
-        card.classList.toggle('is-playing', !vid.paused);
-      };
-
-      vid.addEventListener('play', syncPlaying);
-      vid.addEventListener('pause', syncPlaying);
-      vid.addEventListener('ended', syncPlaying);
-
-      card.addEventListener('mouseenter', () => {
-        vid.play().catch(() => {});
-      });
-      card.addEventListener('mouseleave', () => {
-        vid.pause();
-        vid.currentTime = 0;
-      });
-
-      card.addEventListener('click', () => {
-        if (vid.paused) {
-          vid.play().catch(() => {});
-        } else {
-          vid.pause();
-        }
-      });
-    });
-
-    /* ----- Floating particles (always on) ----- */
+    /* ========== Floating particles ========== */
     const particlesEl = document.getElementById('particles');
-    const count = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 18;
-
+    const count = reduceMotion ? 0 : 18;
     for (let i = 0; i < count; i++) {
       const p = document.createElement('span');
       p.className = 'particle';
@@ -291,7 +706,7 @@
       particlesEl.appendChild(p);
     }
 
-    /* Hide scroll hint after user scrolls */
+    /* Hide scroll hint */
     const hint = document.querySelector('.scroll-hint');
     let hintHidden = false;
     window.addEventListener('scroll', () => {
@@ -302,63 +717,36 @@
       }
     }, { passive: true });
 
-    /* ----- Full-scene parallax (bg + card + layers) ----- */
+    /* ========== Full-scene parallax ========== */
     const profile = document.querySelector('.profile');
     const bannerVid = document.querySelector('.banner video');
     const bgVideo = document.querySelector('.video-bg video');
     const avatar = document.querySelector('.avatar');
     const profileBody = document.querySelector('.profile-body');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (profile && !reduceMotion) {
       let scrollY = 0;
-      let mouseX = 0;
-      let mouseY = 0;
-      let targetX = 0;
-      let targetY = 0;
+      let mouseX = 0, mouseY = 0;
+      let targetX = 0, targetY = 0;
       let rafId = null;
 
       function applyParallax() {
-        const sx = targetX;
-        const sy = targetY;
-        const sc = scrollY;
-
-        // 1) Background video — deepest layer (moves most with mouse, least with scroll feel)
+        const sx = targetX, sy = targetY, sc = scrollY;
         if (bgVideo) {
-          const bx = sx * -28;
-          const by = sy * -22 + sc * 0.15;
-          bgVideo.style.transform = `translate3d(${bx}px, ${by}px, 0) scale(1.14)`;
+          bgVideo.style.transform = `translate3d(${sx * -28}px, ${sy * -22 + sc * 0.15}px, 0) scale(1.14)`;
         }
-
-        // 2) Profile card — mid layer + 3D tilt
-        const rotY = sx * 8;
-        const rotX = sy * -6;
-        const cardX = sx * 14;
-        const cardY = sy * 10 + sc * 0.28;
+        const rotY = sx * 8, rotX = sy * -6;
         profile.style.transform =
-          `translate3d(${cardX}px, ${cardY}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
-        // 3) Banner video inside card — opposite direction (depth inside glass)
+          `translate3d(${sx * 14}px, ${sy * 10 + sc * 0.28}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
         if (bannerVid) {
-          const bnx = sx * -18;
-          const bny = sy * -14 - sc * 0.06;
-          bannerVid.style.transform = `translate3d(${bnx}px, ${bny}px, 0) scale(1.12)`;
+          bannerVid.style.transform = `translate3d(${sx * -18}px, ${sy * -14 - sc * 0.06}px, 0) scale(1.12)`;
         }
-
-        // 4) Avatar — floats slightly toward cursor
         if (avatar) {
-          const ax = sx * 10;
-          const ay = sy * 8;
-          avatar.style.transform = `translate3d(${ax}px, ${ay}px, 20px)`;
+          avatar.style.transform = `translate3d(${sx * 10}px, ${sy * 8}px, 20px)`;
         }
-
-        // 5) Body text / socials / player — lighter shift
         if (profileBody) {
-          const px = sx * 4;
-          const py = sy * 3;
-          profileBody.style.transform = `translate3d(${px}px, ${py}px, 10px)`;
+          profileBody.style.transform = `translate3d(${sx * 4}px, ${sy * 3}px, 10px)`;
         }
-
         rafId = null;
       }
 
@@ -371,27 +759,19 @@
         requestTick();
       }, { passive: true });
 
-      // mouse parallax across whole viewport (not only hero)
       window.addEventListener('mousemove', (e) => {
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
-        mouseX = (e.clientX - cx) / (window.innerWidth / 2);
-        mouseY = (e.clientY - cy) / (window.innerHeight / 2);
-        mouseX = Math.max(-1, Math.min(1, mouseX));
-        mouseY = Math.max(-1, Math.min(1, mouseY));
+        mouseX = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth / 2)));
+        mouseY = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight / 2)));
         profile.classList.add('is-tilting');
         requestTick();
       }, { passive: true });
 
-      // smooth lerp loop
       function lerpLoop() {
         targetX += (mouseX - targetX) * 0.08;
         targetY += (mouseY - targetY) * 0.08;
-        if (
-          Math.abs(mouseX - targetX) > 0.001 ||
-          Math.abs(mouseY - targetY) > 0.001 ||
-          scrollY > 0
-        ) {
+        if (Math.abs(mouseX - targetX) > 0.001 || Math.abs(mouseY - targetY) > 0.001 || scrollY > 0) {
           requestTick();
         }
         requestAnimationFrame(lerpLoop);
