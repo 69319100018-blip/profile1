@@ -24,6 +24,9 @@
     </div>
   </div>
 
+  <!-- Skeletal reptile (enter gate only) -->
+  <canvas id="reptileCanvas" aria-hidden="true"></canvas>
+
   <!-- Scroll progress bar -->
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
@@ -279,6 +282,486 @@
         }
       });
     }
+
+    /* ========== Skeletal European dragon (red) + shark (blue) ========== */
+    (function () {
+      const canvas = document.getElementById('reptileCanvas');
+      if (!canvas || reduceMotion) return;
+
+      const ctx = canvas.getContext('2d');
+      const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+
+      function fit() {
+        const w = innerWidth, h = innerHeight;
+        canvas.width = Math.floor(w * DPR);
+        canvas.height = Math.floor(h * DPR);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+      addEventListener('resize', fit);
+      fit();
+
+      const target = { x: innerWidth * 0.55, y: innerHeight * 0.45 };
+
+      addEventListener('mousemove', (e) => {
+        if (!document.body.classList.contains('locked')) return;
+        target.x = e.clientX;
+        target.y = e.clientY;
+      });
+      addEventListener('touchmove', (e) => {
+        if (!document.body.classList.contains('locked')) return;
+        const t = e.touches[0];
+        if (!t) return;
+        target.x = t.clientX;
+        target.y = t.clientY;
+      }, { passive: true });
+
+      function angleTowards(a, b, maxStep) {
+        let d = ((b - a + Math.PI) % (Math.PI * 2)) - Math.PI;
+        if (d > maxStep) d = maxStep;
+        if (d < -maxStep) d = -maxStep;
+        return a + d;
+      }
+
+      function createCreature(opts) {
+        const {
+          type = 'dragon',
+          color = '#ff6b6b',
+          glowColor = 'rgba(255,80,80,0.45)',
+          startX, startY, startA = 0,
+          maxSpeed = 260, maxTurn = 3.2,
+          gap = 4.5, numSeg = 70,
+          scale = 1.4, lag = 0
+        } = opts;
+
+        const head = { x: startX, y: startY, a: startA };
+        const trail = [];
+        const dx0 = Math.cos(startA), dy0 = Math.sin(startA);
+        for (let i = numSeg; i >= 0; i--) {
+          trail.push({ x: head.x - dx0 * i * gap, y: head.y - dy0 * i * gap });
+        }
+        const lagged = { x: startX, y: startY };
+
+        function sampleTrail(distBack) {
+          let need = distBack;
+          let i = trail.length - 1;
+          let p = trail[i];
+          while (i > 0) {
+            const q = trail[i - 1];
+            const seg = Math.hypot(p.x - q.x, p.y - q.y);
+            if (seg >= need && seg > 0) {
+              const t = need / seg;
+              return { x: p.x + (q.x - p.x) * t, y: p.y + (q.y - p.y) * t };
+            }
+            need -= seg;
+            i--;
+            p = q;
+          }
+          return trail[0];
+        }
+
+        function directionAt(offset) {
+          const ahead = sampleTrail(Math.max(0, offset - 3));
+          const behind = sampleTrail(offset + 3);
+          const vx = ahead.x - behind.x, vy = ahead.y - behind.y;
+          return (vx || vy) ? Math.atan2(vy, vx) : head.a;
+        }
+
+        function setStyle(alpha) {
+          ctx.strokeStyle = color;
+          ctx.fillStyle = color;
+          ctx.shadowColor = glowColor;
+          ctx.shadowBlur = 14;
+          ctx.globalAlpha = alpha == null ? 1 : alpha;
+        }
+
+        function update(dt, mouseX, mouseY) {
+          if (lag > 0) {
+            lagged.x += (mouseX - lagged.x) * (1 - Math.exp(-dt / lag));
+            lagged.y += (mouseY - lagged.y) * (1 - Math.exp(-dt / lag));
+          } else {
+            lagged.x = mouseX;
+            lagged.y = mouseY;
+          }
+          const dx = lagged.x - head.x;
+          const dy = lagged.y - head.y;
+          const dist = Math.hypot(dx, dy) || 0.001;
+          head.a = angleTowards(head.a, Math.atan2(dy, dx), maxTurn * dt);
+          let speed = maxSpeed;
+          const slowR = 90 * scale;
+          if (dist < slowR) speed *= Math.max(0.12, dist / slowR);
+          if (dist > 5) {
+            head.x += Math.cos(head.a) * speed * dt;
+            head.y += Math.sin(head.a) * speed * dt;
+          }
+          trail.push({ x: head.x, y: head.y });
+          while (trail.length > numSeg + 8) trail.shift();
+        }
+
+        function drawDragon(now) {
+          const S = scale;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          setStyle(1);
+
+          ctx.beginPath();
+          for (let i = 0; i < numSeg; i++) {
+            const p = sampleTrail(i * gap);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.lineWidth = 2.4 * S;
+          ctx.stroke();
+
+          for (let i = 2; i < numSeg - 4; i += 2) {
+            const p = sampleTrail(i * gap);
+            const a = directionAt(i * gap);
+            const px = Math.cos(a + Math.PI / 2);
+            const py = Math.sin(a + Math.PI / 2);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2.1 * S, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (i < numSeg * 0.7) {
+              const ribLen = (14 + Math.sin(i * 0.2) * 4) * S;
+              setStyle(0.55 * (1 - i / numSeg));
+              ctx.lineWidth = 1.4 * S;
+              ctx.beginPath();
+              ctx.moveTo(p.x + px * 2.5 * S, p.y + py * 2.5 * S);
+              ctx.quadraticCurveTo(
+                p.x + px * ribLen * 0.5 + Math.cos(a) * 5 * S,
+                p.y + py * ribLen * 0.5 + Math.sin(a) * 5 * S,
+                p.x + px * ribLen, p.y + py * ribLen
+              );
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(p.x - px * 2.5 * S, p.y - py * 2.5 * S);
+              ctx.quadraticCurveTo(
+                p.x - px * ribLen * 0.5 + Math.cos(a) * 5 * S,
+                p.y - py * ribLen * 0.5 + Math.sin(a) * 5 * S,
+                p.x - px * ribLen, p.y - py * ribLen
+              );
+              ctx.stroke();
+              setStyle(1);
+            }
+          }
+
+          // European bat wings
+          {
+            const p = sampleTrail(numSeg * 0.2 * gap);
+            const a = directionAt(numSeg * 0.2 * gap);
+            const px = Math.cos(a + Math.PI / 2);
+            const py = Math.sin(a + Math.PI / 2);
+            const flap = Math.sin(now * 0.0045) * 0.28;
+            ctx.lineWidth = 1.7 * S;
+            for (const s of [-1, 1]) {
+              const bx = p.x + s * px * 3 * S;
+              const by = p.y + s * py * 3 * S;
+              const midX = bx + s * px * 20 * S + Math.cos(a + flap * s) * 16 * S;
+              const midY = by + s * py * 20 * S + Math.sin(a + flap * s) * 16 * S;
+              const tipX = bx + s * px * 36 * S + Math.cos(a + flap * s * 0.6) * 8 * S;
+              const tipY = by + s * py * 36 * S + Math.sin(a + flap * s * 0.6) * 8 * S;
+              ctx.beginPath();
+              ctx.moveTo(bx, by);
+              ctx.lineTo(midX, midY);
+              ctx.lineTo(tipX, tipY);
+              ctx.stroke();
+              for (let f = 0; f < 4; f++) {
+                const t = 0.25 + f * 0.18;
+                const fx = bx + (tipX - bx) * t;
+                const fy = by + (tipY - by) * t;
+                const len = (16 - f * 2.5) * S;
+                const ang = a + s * (0.85 + f * 0.22) + flap * 0.5;
+                ctx.beginPath();
+                ctx.moveTo(fx, fy);
+                ctx.lineTo(fx + Math.cos(ang) * len, fy + Math.sin(ang) * len);
+                ctx.stroke();
+              }
+            }
+          }
+
+          // 4 legs
+          [[0.28, 22], [0.38, 20], [0.55, 24], [0.65, 22]].forEach(([frac, baseLen], idx) => {
+            const p = sampleTrail(numSeg * frac * gap);
+            const a = directionAt(numSeg * frac * gap);
+            const walk = Math.sin(now * 0.007 + idx * 1.6) * 0.4;
+            const legLen = baseLen * S;
+            for (const s of [-1, 1]) {
+              const hipA = a + s * (Math.PI / 2 + 0.15);
+              const kneeA = hipA + s * (0.55 + walk * 0.3);
+              const kX = p.x + Math.cos(hipA) * legLen * 0.42;
+              const kY = p.y + Math.sin(hipA) * legLen * 0.42;
+              const fX = kX + Math.cos(kneeA) * legLen * 0.55;
+              const fY = kY + Math.sin(kneeA) * legLen * 0.55;
+              setStyle(0.85);
+              ctx.lineWidth = 1.7 * S;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(kX, kY);
+              ctx.lineTo(fX, fY);
+              for (let c = -1; c <= 1; c++) {
+                ctx.moveTo(fX, fY);
+                ctx.lineTo(fX + Math.cos(kneeA + c * 0.45) * 5.5 * S, fY + Math.sin(kneeA + c * 0.45) * 5.5 * S);
+              }
+              ctx.stroke();
+              setStyle(1);
+            }
+          });
+
+          // European head
+          const hx = head.x, hy = head.y, ha = head.a;
+          ctx.lineWidth = 2.1 * S;
+          ctx.beginPath();
+          ctx.moveTo(hx + Math.cos(ha) * 18 * S, hy + Math.sin(ha) * 18 * S);
+          ctx.lineTo(hx + Math.cos(ha + 0.45) * 10 * S, hy + Math.sin(ha + 0.45) * 10 * S);
+          ctx.lineTo(hx + Math.cos(ha + 2.2) * 9 * S, hy + Math.sin(ha + 2.2) * 9 * S);
+          ctx.lineTo(hx + Math.cos(ha - 2.2) * 9 * S, hy + Math.sin(ha - 2.2) * 9 * S);
+          ctx.lineTo(hx + Math.cos(ha - 0.45) * 10 * S, hy + Math.sin(ha - 0.45) * 10 * S);
+          ctx.closePath();
+          ctx.stroke();
+          for (const s of [-1, 1]) {
+            const bx = hx + Math.cos(ha + s * 1.0) * 7 * S;
+            const by = hy + Math.sin(ha + s * 1.0) * 7 * S;
+            ctx.beginPath();
+            ctx.moveTo(bx, by);
+            ctx.lineTo(bx + Math.cos(ha + s * 0.7 - 0.55) * 13 * S, by + Math.sin(ha + s * 0.7 - 0.55) * 13 * S);
+            ctx.stroke();
+          }
+          ctx.beginPath();
+          ctx.moveTo(hx + Math.cos(ha) * 9 * S, hy + Math.sin(ha) * 9 * S);
+          ctx.lineTo(hx + Math.cos(ha + 0.35) * 17 * S, hy + Math.sin(ha + 0.35) * 17 * S);
+          ctx.stroke();
+          ctx.shadowBlur = 20;
+          ctx.beginPath();
+          ctx.arc(
+            hx + Math.cos(ha) * 6 * S + Math.cos(ha + Math.PI / 2) * 3.2 * S,
+            hy + Math.sin(ha) * 6 * S + Math.sin(ha + Math.PI / 2) * 3.2 * S,
+            2.2 * S, 0, Math.PI * 2
+          );
+          ctx.fill();
+          ctx.shadowBlur = 14;
+
+          const tip = sampleTrail((numSeg - 1) * gap);
+          const ta = directionAt((numSeg - 3) * gap);
+          ctx.beginPath();
+          ctx.moveTo(tip.x, tip.y);
+          ctx.lineTo(tip.x + Math.cos(ta + 0.55) * 9 * S, tip.y + Math.sin(ta + 0.55) * 9 * S);
+          ctx.lineTo(tip.x + Math.cos(ta) * 13 * S, tip.y + Math.sin(ta) * 13 * S);
+          ctx.lineTo(tip.x + Math.cos(ta - 0.55) * 9 * S, tip.y + Math.sin(ta - 0.55) * 9 * S);
+          ctx.closePath();
+          ctx.stroke();
+        }
+
+        function drawShark(now) {
+          const S = scale;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          setStyle(1);
+
+          ctx.beginPath();
+          for (let i = 0; i < numSeg; i++) {
+            const p = sampleTrail(i * gap);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.lineWidth = 2.5 * S;
+          ctx.stroke();
+
+          for (let i = 2; i < numSeg - 2; i += 2) {
+            const p = sampleTrail(i * gap);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 1.7 * S, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          for (let i = 5; i < numSeg * 0.5; i += 3) {
+            const p = sampleTrail(i * gap);
+            const a = directionAt(i * gap);
+            const px = Math.cos(a + Math.PI / 2);
+            const py = Math.sin(a + Math.PI / 2);
+            const ribLen = (9 + (1 - i / (numSeg * 0.5)) * 5) * S;
+            setStyle(0.5);
+            ctx.lineWidth = 1.3 * S;
+            ctx.beginPath();
+            ctx.moveTo(p.x + px * 2 * S, p.y + py * 2 * S);
+            ctx.lineTo(p.x + px * ribLen, p.y + py * ribLen);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(p.x - px * 2 * S, p.y - py * 2 * S);
+            ctx.lineTo(p.x - px * ribLen, p.y - py * ribLen);
+            ctx.stroke();
+            setStyle(1);
+          }
+
+          // dorsal fin
+          {
+            const p = sampleTrail(numSeg * 0.25 * gap);
+            const a = directionAt(numSeg * 0.25 * gap);
+            const px = Math.cos(a + Math.PI / 2);
+            const py = Math.sin(a + Math.PI / 2);
+            ctx.lineWidth = 1.9 * S;
+            ctx.beginPath();
+            ctx.moveTo(p.x + px * 2 * S, p.y + py * 2 * S);
+            ctx.lineTo(p.x + px * 20 * S + Math.cos(a) * 4 * S, p.y + py * 20 * S + Math.sin(a) * 4 * S);
+            ctx.lineTo(p.x + px * 3 * S + Math.cos(a) * 12 * S, p.y + py * 3 * S + Math.sin(a) * 12 * S);
+            ctx.closePath();
+            ctx.stroke();
+          }
+
+          // pectoral fins
+          {
+            const p = sampleTrail(numSeg * 0.16 * gap);
+            const a = directionAt(numSeg * 0.16 * gap);
+            const px = Math.cos(a + Math.PI / 2);
+            const py = Math.sin(a + Math.PI / 2);
+            const flap = Math.sin(now * 0.007) * 0.12;
+            ctx.lineWidth = 1.6 * S;
+            for (const s of [-1, 1]) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(
+                p.x + s * px * 16 * S + Math.cos(a + flap) * 6 * S,
+                p.y + s * py * 16 * S + Math.sin(a + flap) * 6 * S
+              );
+              ctx.lineTo(
+                p.x + s * px * 8 * S + Math.cos(a) * 14 * S,
+                p.y + s * py * 8 * S + Math.sin(a) * 14 * S
+              );
+              ctx.closePath();
+              ctx.stroke();
+            }
+          }
+
+          // caudal fin
+          {
+            const tip = sampleTrail((numSeg - 1) * gap);
+            const a = directionAt((numSeg - 3) * gap);
+            const px = Math.cos(a + Math.PI / 2);
+            const py = Math.sin(a + Math.PI / 2);
+            ctx.lineWidth = 1.8 * S;
+            ctx.beginPath();
+            ctx.moveTo(tip.x, tip.y);
+            ctx.lineTo(tip.x + px * 14 * S - Math.cos(a) * 3 * S, tip.y + py * 14 * S - Math.sin(a) * 3 * S);
+            ctx.lineTo(tip.x - Math.cos(a) * 6 * S, tip.y - Math.sin(a) * 6 * S);
+            ctx.lineTo(tip.x - px * 10 * S - Math.cos(a) * 2 * S, tip.y - py * 10 * S - Math.sin(a) * 2 * S);
+            ctx.closePath();
+            ctx.stroke();
+          }
+
+          // snout
+          const hx = head.x, hy = head.y, ha = head.a;
+          ctx.lineWidth = 2 * S;
+          ctx.beginPath();
+          ctx.moveTo(hx + Math.cos(ha) * 15 * S, hy + Math.sin(ha) * 15 * S);
+          ctx.lineTo(hx + Math.cos(ha + 0.5) * 7 * S, hy + Math.sin(ha + 0.5) * 7 * S);
+          ctx.lineTo(hx + Math.cos(ha + 2.6) * 6 * S, hy + Math.sin(ha + 2.6) * 6 * S);
+          ctx.lineTo(hx + Math.cos(ha - 2.6) * 6 * S, hy + Math.sin(ha - 2.6) * 6 * S);
+          ctx.lineTo(hx + Math.cos(ha - 0.5) * 7 * S, hy + Math.sin(ha - 0.5) * 7 * S);
+          ctx.closePath();
+          ctx.stroke();
+
+          ctx.shadowBlur = 18;
+          ctx.beginPath();
+          ctx.arc(
+            hx + Math.cos(ha) * 5 * S + Math.cos(ha + Math.PI / 2) * 2.8 * S,
+            hy + Math.sin(ha) * 5 * S + Math.sin(ha + Math.PI / 2) * 2.8 * S,
+            1.9 * S, 0, Math.PI * 2
+          );
+          ctx.fill();
+          ctx.shadowBlur = 14;
+
+          for (let g = 0; g < 5; g++) {
+            const gp = sampleTrail((6 + g * 3.5) * gap * 0.4);
+            const ga = directionAt((6 + g * 3.5) * gap * 0.4);
+            const gpx = Math.cos(ga + Math.PI / 2);
+            const gpy = Math.sin(ga + Math.PI / 2);
+            setStyle(0.65);
+            ctx.lineWidth = 1.15 * S;
+            ctx.beginPath();
+            ctx.moveTo(gp.x + gpx * 2.5 * S, gp.y + gpy * 2.5 * S);
+            ctx.lineTo(gp.x + gpx * 8 * S, gp.y + gpy * 8 * S);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(gp.x - gpx * 2.5 * S, gp.y - gpy * 2.5 * S);
+            ctx.lineTo(gp.x - gpx * 8 * S, gp.y - gpy * 8 * S);
+            ctx.stroke();
+            setStyle(1);
+          }
+        }
+
+        function draw(now) {
+          ctx.save();
+          if (type === 'shark') drawShark(now);
+          else drawDragon(now);
+          ctx.restore();
+          ctx.shadowBlur = 0;
+          ctx.globalAlpha = 1;
+        }
+
+        return { update, draw };
+      }
+
+      const creatures = [
+        createCreature({
+          type: 'dragon',
+          color: '#ff5c5c',
+          glowColor: 'rgba(255, 60, 60, 0.55)',
+          startX: innerWidth * 0.28,
+          startY: innerHeight * 0.58,
+          maxSpeed: 275,
+          maxTurn: 3.4,
+          gap: 4.6,
+          numSeg: 68,
+          scale: 1.35,
+          lag: 0
+        }),
+        createCreature({
+          type: 'shark',
+          color: '#5cb8ff',
+          glowColor: 'rgba(60, 160, 255, 0.55)',
+          startX: innerWidth * 0.72,
+          startY: innerHeight * 0.38,
+          startA: Math.PI,
+          maxSpeed: 300,
+          maxTurn: 3.7,
+          gap: 4.2,
+          numSeg: 58,
+          scale: 1.28,
+          lag: 0.12
+        })
+      ];
+
+      let last = performance.now();
+      let running = true;
+
+      function loop() {
+        if (!running || !document.body.classList.contains('locked')) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
+        }
+        const now = performance.now();
+        const dt = Math.min(0.032, (now - last) / 1000);
+        last = now;
+        creatures.forEach((c) => c.update(dt, target.x, target.y));
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        creatures.forEach((c) => c.draw(now));
+        requestAnimationFrame(loop);
+      }
+
+      const obs = new MutationObserver(() => {
+        if (!document.body.classList.contains('locked')) {
+          running = false;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          setTimeout(() => { canvas.style.display = 'none'; }, 600);
+          obs.disconnect();
+        }
+      });
+      obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+      requestAnimationFrame(loop);
+    })();
+
 
     /* ========== Soft custom cursor + trail ========== */
     const cursor = document.getElementById('cursor');
