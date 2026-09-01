@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body class="locked">
   <!-- Enter gate -->
@@ -23,9 +24,6 @@
       </p>
     </div>
   </div>
-
-  <!-- Skeletal reptile (enter gate only) -->
-  <canvas id="reptileCanvas" aria-hidden="true"></canvas>
 
   <!-- Scroll progress bar -->
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -90,8 +88,8 @@
         </div>
 
         <p class="bio">
-          เก็บความเงียบไว้ในใจ<br />
-           ปลดปล่อยเมื่อยามจำป็น
+          I don't know how much longer I can endure this,<br />
+          but right now I'm so tired I can barely... hold it in.
         </p>
 
         <nav class="socials" aria-label="Social links">
@@ -133,15 +131,15 @@
           </div>
           <div class="player-info">
             <div class="player-meta">
-              <div class="player-title">Drag Path</div>
-              <div class="player-artist">Twenty One Pilots</div>
+              <div class="player-title" id="playerTitle">Insomnia</div>
+              <div class="player-artist" id="playerArtist">slowed + reverb</div>
             </div>
             <div class="progress-wrap">
               <span class="time" id="currentTime">0:00</span>
               <div class="progress" id="progress" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
                 <div class="progress-bar" id="progressBar"></div>
               </div>
-              <span class="time end" id="duration">3:44</span>
+              <span class="time end" id="duration">2:42</span>
             </div>
             <!-- Simple visualizer -->
             <div class="viz" id="viz" aria-hidden="true">
@@ -173,58 +171,44 @@
     </div>
   </section>
 
-  <!-- ========== WORKS / PORTFOLIO ========== -->
+  <!-- ========== WORKS / CURVED IMAGE SLIDER ========== -->
   <section class="works" id="works" aria-label="ผลงาน">
     <header class="works-header reveal">
       <h2>ผลงาน · Works</h2>
       <p>game clips · fiveM · photos · moments</p>
     </header>
 
-    <div class="works-grid">
-      <article class="work-card reveal" data-full="image.png" data-caption="Light City · night drive">
-        <div class="work-media">
-          <img src="image.png" alt="FiveM Light City" loading="lazy" />
-        </div>
-        <div class="work-info">
-          <h3></h3>
-          <p>FiveM by Cfx.re · frame capture</p>
-          <span class="work-tag">Screenshot</span>
-        </div>
-      </article>
-
-      <article class="work-card reveal" data-full="image1.png" data-caption="Talos · character still">
-        <div class="work-media">
-          <img src="image1.png" alt="talos" loading="lazy" />
-        </div>
-        <div class="work-info">
-          <h3></h3>
-          <p>character · still frame</p>
-          <span class="work-tag">Art</span>
-        </div>
-      </article>
-
-      <article class="work-card reveal" data-full="work-lightcity.png" data-caption="Light City · street lights">
-        <div class="work-media">
-          <img src="work-lightcity.png" alt="FiveM Light City" loading="lazy" />
-        </div>
-        <div class="work-info">
-          <h3></h3>
-          <p>FiveM by Cfx.re · frame capture</p>
-          <span class="work-tag">Screenshot</span>
-        </div>
-      </article>
-
-      <article class="work-card reveal" data-full="talos.png" data-caption="Talos · portrait">
-        <div class="work-media">
-          <img src="talos.png" alt="talos" loading="lazy" />
-        </div>
-        <div class="work-info">
-          <h3></h3>
-          <p>character · still</p>
-          <span class="work-tag">Art</span>
-        </div>
-      </article>
+    <div class="slider-wrap" id="sliderWrap">
+      <div class="slider-stage" id="sliderStage">
+        <article class="slide" data-full="image.png" data-caption="Light City · night drive">
+          <img src="image.png" alt="FiveM Light City" draggable="false" />
+          <span class="slide-caption">Light City · night drive</span>
+        </article>
+        <article class="slide" data-full="image1.png" data-caption="Talos · character still">
+          <img src="image1.png" alt="talos" draggable="false" />
+          <span class="slide-caption">Talos · character still</span>
+        </article>
+        <article class="slide" data-full="work-lightcity.png" data-caption="Light City · street lights">
+          <img src="work-lightcity.png" alt="FiveM Light City" draggable="false" />
+          <span class="slide-caption">Light City · street lights</span>
+        </article>
+        <article class="slide" data-full="talos.png" data-caption="Talos · portrait">
+          <img src="talos.png" alt="talos" draggable="false" />
+          <span class="slide-caption">Talos · portrait</span>
+        </article>
+      </div>
     </div>
+
+    <div class="slider-nav">
+      <button class="slider-btn" id="sliderPrev" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="slider-btn" id="sliderNext" aria-label="Next">
+        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="slider-dots" id="sliderDots" aria-hidden="true"></div>
+    <p class="slider-hint">drag · scroll · click</p>
   </section>
 
   <!-- Footer -->
@@ -233,17 +217,19 @@
   </footer>
 
   <audio id="audio" preload="metadata" loop>
-    <source src="Twenty One Pilots - Drag Path (Lyrics).mp3" type="audio/mpeg" />
+    <source src="Insomnia slowed reverb.mp3" type="audio/mpeg" />
   </audio>
 
   <script>
-    /* ========== Random video pair (bg + banner ใช้คลิปเดียวกัน) ========== */
+    /* ========== Random video pair (bg + banner) + theme/song ========== */
     (function () {
       const clips = [
         'ssstik.io_@soul.blr_1779080280199.mp4',
         '222.mp4'
       ];
       const pick = clips[Math.floor(Math.random() * clips.length)];
+      window.__bgClip = pick;
+
       const bg = document.getElementById('bgVideo');
       const banner = document.getElementById('bannerVideo');
       if (bg) {
@@ -255,6 +241,35 @@
         const src = banner.querySelector('source');
         if (src) src.src = pick;
         banner.load();
+      }
+
+      // 222.mp4 → ธีมอุ่น + เพลง Ariana remix (เริ่มที่ 0:33)
+      window.__audioStartAt = 0;
+      if (pick === '222.mp4') {
+        document.body.classList.add('theme-alt');
+        window.__audioStartAt = 33;
+        const audio = document.getElementById('audio');
+        const srcEl = audio && audio.querySelector('source');
+        if (srcEl) {
+          srcEl.src = 'bye-into-you-remix.mp3';
+          audio.load();
+        }
+        const title = document.getElementById('playerTitle');
+        const artist = document.getElementById('playerArtist');
+        const durationEl = document.getElementById('duration');
+        if (title) title.textContent = 'bye × Into You';
+        if (artist) artist.textContent = 'Ariana Grande · Altare Remix';
+        if (durationEl) durationEl.textContent = '9:50';
+
+        if (audio) {
+          const seekStart = () => {
+            if (audio.currentTime < window.__audioStartAt) {
+              audio.currentTime = window.__audioStartAt;
+            }
+          };
+          audio.addEventListener('loadedmetadata', seekStart);
+          audio.addEventListener('canplay', seekStart);
+        }
       }
     })();
 
@@ -271,6 +286,14 @@
       setTimeout(() => {
         enterGate.style.display = 'none';
       }, reduceMotion ? 0 : 700);
+
+      // เริ่มเพลงทันทีเมื่อกด enter
+      const bgAudio = document.getElementById('audio');
+      if (bgAudio) {
+        const startAt = window.__audioStartAt || 0;
+        if (startAt > 0) bgAudio.currentTime = startAt;
+        bgAudio.play().catch(() => {});
+      }
     }
 
     if (enterGate) {
@@ -282,486 +305,6 @@
         }
       });
     }
-
-    /* ========== Skeletal European dragon (red) + shark (blue) ========== */
-    (function () {
-      const canvas = document.getElementById('reptileCanvas');
-      if (!canvas || reduceMotion) return;
-
-      const ctx = canvas.getContext('2d');
-      const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-
-      function fit() {
-        const w = innerWidth, h = innerHeight;
-        canvas.width = Math.floor(w * DPR);
-        canvas.height = Math.floor(h * DPR);
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      }
-      addEventListener('resize', fit);
-      fit();
-
-      const target = { x: innerWidth * 0.55, y: innerHeight * 0.45 };
-
-      addEventListener('mousemove', (e) => {
-        if (!document.body.classList.contains('locked')) return;
-        target.x = e.clientX;
-        target.y = e.clientY;
-      });
-      addEventListener('touchmove', (e) => {
-        if (!document.body.classList.contains('locked')) return;
-        const t = e.touches[0];
-        if (!t) return;
-        target.x = t.clientX;
-        target.y = t.clientY;
-      }, { passive: true });
-
-      function angleTowards(a, b, maxStep) {
-        let d = ((b - a + Math.PI) % (Math.PI * 2)) - Math.PI;
-        if (d > maxStep) d = maxStep;
-        if (d < -maxStep) d = -maxStep;
-        return a + d;
-      }
-
-      function createCreature(opts) {
-        const {
-          type = 'dragon',
-          color = '#ff6b6b',
-          glowColor = 'rgba(255,80,80,0.45)',
-          startX, startY, startA = 0,
-          maxSpeed = 260, maxTurn = 3.2,
-          gap = 4.5, numSeg = 70,
-          scale = 1.4, lag = 0
-        } = opts;
-
-        const head = { x: startX, y: startY, a: startA };
-        const trail = [];
-        const dx0 = Math.cos(startA), dy0 = Math.sin(startA);
-        for (let i = numSeg; i >= 0; i--) {
-          trail.push({ x: head.x - dx0 * i * gap, y: head.y - dy0 * i * gap });
-        }
-        const lagged = { x: startX, y: startY };
-
-        function sampleTrail(distBack) {
-          let need = distBack;
-          let i = trail.length - 1;
-          let p = trail[i];
-          while (i > 0) {
-            const q = trail[i - 1];
-            const seg = Math.hypot(p.x - q.x, p.y - q.y);
-            if (seg >= need && seg > 0) {
-              const t = need / seg;
-              return { x: p.x + (q.x - p.x) * t, y: p.y + (q.y - p.y) * t };
-            }
-            need -= seg;
-            i--;
-            p = q;
-          }
-          return trail[0];
-        }
-
-        function directionAt(offset) {
-          const ahead = sampleTrail(Math.max(0, offset - 3));
-          const behind = sampleTrail(offset + 3);
-          const vx = ahead.x - behind.x, vy = ahead.y - behind.y;
-          return (vx || vy) ? Math.atan2(vy, vx) : head.a;
-        }
-
-        function setStyle(alpha) {
-          ctx.strokeStyle = color;
-          ctx.fillStyle = color;
-          ctx.shadowColor = glowColor;
-          ctx.shadowBlur = 14;
-          ctx.globalAlpha = alpha == null ? 1 : alpha;
-        }
-
-        function update(dt, mouseX, mouseY) {
-          if (lag > 0) {
-            lagged.x += (mouseX - lagged.x) * (1 - Math.exp(-dt / lag));
-            lagged.y += (mouseY - lagged.y) * (1 - Math.exp(-dt / lag));
-          } else {
-            lagged.x = mouseX;
-            lagged.y = mouseY;
-          }
-          const dx = lagged.x - head.x;
-          const dy = lagged.y - head.y;
-          const dist = Math.hypot(dx, dy) || 0.001;
-          head.a = angleTowards(head.a, Math.atan2(dy, dx), maxTurn * dt);
-          let speed = maxSpeed;
-          const slowR = 90 * scale;
-          if (dist < slowR) speed *= Math.max(0.12, dist / slowR);
-          if (dist > 5) {
-            head.x += Math.cos(head.a) * speed * dt;
-            head.y += Math.sin(head.a) * speed * dt;
-          }
-          trail.push({ x: head.x, y: head.y });
-          while (trail.length > numSeg + 8) trail.shift();
-        }
-
-        function drawDragon(now) {
-          const S = scale;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          setStyle(1);
-
-          ctx.beginPath();
-          for (let i = 0; i < numSeg; i++) {
-            const p = sampleTrail(i * gap);
-            if (i === 0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
-          }
-          ctx.lineWidth = 2.4 * S;
-          ctx.stroke();
-
-          for (let i = 2; i < numSeg - 4; i += 2) {
-            const p = sampleTrail(i * gap);
-            const a = directionAt(i * gap);
-            const px = Math.cos(a + Math.PI / 2);
-            const py = Math.sin(a + Math.PI / 2);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 2.1 * S, 0, Math.PI * 2);
-            ctx.fill();
-
-            if (i < numSeg * 0.7) {
-              const ribLen = (14 + Math.sin(i * 0.2) * 4) * S;
-              setStyle(0.55 * (1 - i / numSeg));
-              ctx.lineWidth = 1.4 * S;
-              ctx.beginPath();
-              ctx.moveTo(p.x + px * 2.5 * S, p.y + py * 2.5 * S);
-              ctx.quadraticCurveTo(
-                p.x + px * ribLen * 0.5 + Math.cos(a) * 5 * S,
-                p.y + py * ribLen * 0.5 + Math.sin(a) * 5 * S,
-                p.x + px * ribLen, p.y + py * ribLen
-              );
-              ctx.stroke();
-              ctx.beginPath();
-              ctx.moveTo(p.x - px * 2.5 * S, p.y - py * 2.5 * S);
-              ctx.quadraticCurveTo(
-                p.x - px * ribLen * 0.5 + Math.cos(a) * 5 * S,
-                p.y - py * ribLen * 0.5 + Math.sin(a) * 5 * S,
-                p.x - px * ribLen, p.y - py * ribLen
-              );
-              ctx.stroke();
-              setStyle(1);
-            }
-          }
-
-          // European bat wings
-          {
-            const p = sampleTrail(numSeg * 0.2 * gap);
-            const a = directionAt(numSeg * 0.2 * gap);
-            const px = Math.cos(a + Math.PI / 2);
-            const py = Math.sin(a + Math.PI / 2);
-            const flap = Math.sin(now * 0.0045) * 0.28;
-            ctx.lineWidth = 1.7 * S;
-            for (const s of [-1, 1]) {
-              const bx = p.x + s * px * 3 * S;
-              const by = p.y + s * py * 3 * S;
-              const midX = bx + s * px * 20 * S + Math.cos(a + flap * s) * 16 * S;
-              const midY = by + s * py * 20 * S + Math.sin(a + flap * s) * 16 * S;
-              const tipX = bx + s * px * 36 * S + Math.cos(a + flap * s * 0.6) * 8 * S;
-              const tipY = by + s * py * 36 * S + Math.sin(a + flap * s * 0.6) * 8 * S;
-              ctx.beginPath();
-              ctx.moveTo(bx, by);
-              ctx.lineTo(midX, midY);
-              ctx.lineTo(tipX, tipY);
-              ctx.stroke();
-              for (let f = 0; f < 4; f++) {
-                const t = 0.25 + f * 0.18;
-                const fx = bx + (tipX - bx) * t;
-                const fy = by + (tipY - by) * t;
-                const len = (16 - f * 2.5) * S;
-                const ang = a + s * (0.85 + f * 0.22) + flap * 0.5;
-                ctx.beginPath();
-                ctx.moveTo(fx, fy);
-                ctx.lineTo(fx + Math.cos(ang) * len, fy + Math.sin(ang) * len);
-                ctx.stroke();
-              }
-            }
-          }
-
-          // 4 legs
-          [[0.28, 22], [0.38, 20], [0.55, 24], [0.65, 22]].forEach(([frac, baseLen], idx) => {
-            const p = sampleTrail(numSeg * frac * gap);
-            const a = directionAt(numSeg * frac * gap);
-            const walk = Math.sin(now * 0.007 + idx * 1.6) * 0.4;
-            const legLen = baseLen * S;
-            for (const s of [-1, 1]) {
-              const hipA = a + s * (Math.PI / 2 + 0.15);
-              const kneeA = hipA + s * (0.55 + walk * 0.3);
-              const kX = p.x + Math.cos(hipA) * legLen * 0.42;
-              const kY = p.y + Math.sin(hipA) * legLen * 0.42;
-              const fX = kX + Math.cos(kneeA) * legLen * 0.55;
-              const fY = kY + Math.sin(kneeA) * legLen * 0.55;
-              setStyle(0.85);
-              ctx.lineWidth = 1.7 * S;
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(kX, kY);
-              ctx.lineTo(fX, fY);
-              for (let c = -1; c <= 1; c++) {
-                ctx.moveTo(fX, fY);
-                ctx.lineTo(fX + Math.cos(kneeA + c * 0.45) * 5.5 * S, fY + Math.sin(kneeA + c * 0.45) * 5.5 * S);
-              }
-              ctx.stroke();
-              setStyle(1);
-            }
-          });
-
-          // European head
-          const hx = head.x, hy = head.y, ha = head.a;
-          ctx.lineWidth = 2.1 * S;
-          ctx.beginPath();
-          ctx.moveTo(hx + Math.cos(ha) * 18 * S, hy + Math.sin(ha) * 18 * S);
-          ctx.lineTo(hx + Math.cos(ha + 0.45) * 10 * S, hy + Math.sin(ha + 0.45) * 10 * S);
-          ctx.lineTo(hx + Math.cos(ha + 2.2) * 9 * S, hy + Math.sin(ha + 2.2) * 9 * S);
-          ctx.lineTo(hx + Math.cos(ha - 2.2) * 9 * S, hy + Math.sin(ha - 2.2) * 9 * S);
-          ctx.lineTo(hx + Math.cos(ha - 0.45) * 10 * S, hy + Math.sin(ha - 0.45) * 10 * S);
-          ctx.closePath();
-          ctx.stroke();
-          for (const s of [-1, 1]) {
-            const bx = hx + Math.cos(ha + s * 1.0) * 7 * S;
-            const by = hy + Math.sin(ha + s * 1.0) * 7 * S;
-            ctx.beginPath();
-            ctx.moveTo(bx, by);
-            ctx.lineTo(bx + Math.cos(ha + s * 0.7 - 0.55) * 13 * S, by + Math.sin(ha + s * 0.7 - 0.55) * 13 * S);
-            ctx.stroke();
-          }
-          ctx.beginPath();
-          ctx.moveTo(hx + Math.cos(ha) * 9 * S, hy + Math.sin(ha) * 9 * S);
-          ctx.lineTo(hx + Math.cos(ha + 0.35) * 17 * S, hy + Math.sin(ha + 0.35) * 17 * S);
-          ctx.stroke();
-          ctx.shadowBlur = 20;
-          ctx.beginPath();
-          ctx.arc(
-            hx + Math.cos(ha) * 6 * S + Math.cos(ha + Math.PI / 2) * 3.2 * S,
-            hy + Math.sin(ha) * 6 * S + Math.sin(ha + Math.PI / 2) * 3.2 * S,
-            2.2 * S, 0, Math.PI * 2
-          );
-          ctx.fill();
-          ctx.shadowBlur = 14;
-
-          const tip = sampleTrail((numSeg - 1) * gap);
-          const ta = directionAt((numSeg - 3) * gap);
-          ctx.beginPath();
-          ctx.moveTo(tip.x, tip.y);
-          ctx.lineTo(tip.x + Math.cos(ta + 0.55) * 9 * S, tip.y + Math.sin(ta + 0.55) * 9 * S);
-          ctx.lineTo(tip.x + Math.cos(ta) * 13 * S, tip.y + Math.sin(ta) * 13 * S);
-          ctx.lineTo(tip.x + Math.cos(ta - 0.55) * 9 * S, tip.y + Math.sin(ta - 0.55) * 9 * S);
-          ctx.closePath();
-          ctx.stroke();
-        }
-
-        function drawShark(now) {
-          const S = scale;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          setStyle(1);
-
-          ctx.beginPath();
-          for (let i = 0; i < numSeg; i++) {
-            const p = sampleTrail(i * gap);
-            if (i === 0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
-          }
-          ctx.lineWidth = 2.5 * S;
-          ctx.stroke();
-
-          for (let i = 2; i < numSeg - 2; i += 2) {
-            const p = sampleTrail(i * gap);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 1.7 * S, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          for (let i = 5; i < numSeg * 0.5; i += 3) {
-            const p = sampleTrail(i * gap);
-            const a = directionAt(i * gap);
-            const px = Math.cos(a + Math.PI / 2);
-            const py = Math.sin(a + Math.PI / 2);
-            const ribLen = (9 + (1 - i / (numSeg * 0.5)) * 5) * S;
-            setStyle(0.5);
-            ctx.lineWidth = 1.3 * S;
-            ctx.beginPath();
-            ctx.moveTo(p.x + px * 2 * S, p.y + py * 2 * S);
-            ctx.lineTo(p.x + px * ribLen, p.y + py * ribLen);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(p.x - px * 2 * S, p.y - py * 2 * S);
-            ctx.lineTo(p.x - px * ribLen, p.y - py * ribLen);
-            ctx.stroke();
-            setStyle(1);
-          }
-
-          // dorsal fin
-          {
-            const p = sampleTrail(numSeg * 0.25 * gap);
-            const a = directionAt(numSeg * 0.25 * gap);
-            const px = Math.cos(a + Math.PI / 2);
-            const py = Math.sin(a + Math.PI / 2);
-            ctx.lineWidth = 1.9 * S;
-            ctx.beginPath();
-            ctx.moveTo(p.x + px * 2 * S, p.y + py * 2 * S);
-            ctx.lineTo(p.x + px * 20 * S + Math.cos(a) * 4 * S, p.y + py * 20 * S + Math.sin(a) * 4 * S);
-            ctx.lineTo(p.x + px * 3 * S + Math.cos(a) * 12 * S, p.y + py * 3 * S + Math.sin(a) * 12 * S);
-            ctx.closePath();
-            ctx.stroke();
-          }
-
-          // pectoral fins
-          {
-            const p = sampleTrail(numSeg * 0.16 * gap);
-            const a = directionAt(numSeg * 0.16 * gap);
-            const px = Math.cos(a + Math.PI / 2);
-            const py = Math.sin(a + Math.PI / 2);
-            const flap = Math.sin(now * 0.007) * 0.12;
-            ctx.lineWidth = 1.6 * S;
-            for (const s of [-1, 1]) {
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(
-                p.x + s * px * 16 * S + Math.cos(a + flap) * 6 * S,
-                p.y + s * py * 16 * S + Math.sin(a + flap) * 6 * S
-              );
-              ctx.lineTo(
-                p.x + s * px * 8 * S + Math.cos(a) * 14 * S,
-                p.y + s * py * 8 * S + Math.sin(a) * 14 * S
-              );
-              ctx.closePath();
-              ctx.stroke();
-            }
-          }
-
-          // caudal fin
-          {
-            const tip = sampleTrail((numSeg - 1) * gap);
-            const a = directionAt((numSeg - 3) * gap);
-            const px = Math.cos(a + Math.PI / 2);
-            const py = Math.sin(a + Math.PI / 2);
-            ctx.lineWidth = 1.8 * S;
-            ctx.beginPath();
-            ctx.moveTo(tip.x, tip.y);
-            ctx.lineTo(tip.x + px * 14 * S - Math.cos(a) * 3 * S, tip.y + py * 14 * S - Math.sin(a) * 3 * S);
-            ctx.lineTo(tip.x - Math.cos(a) * 6 * S, tip.y - Math.sin(a) * 6 * S);
-            ctx.lineTo(tip.x - px * 10 * S - Math.cos(a) * 2 * S, tip.y - py * 10 * S - Math.sin(a) * 2 * S);
-            ctx.closePath();
-            ctx.stroke();
-          }
-
-          // snout
-          const hx = head.x, hy = head.y, ha = head.a;
-          ctx.lineWidth = 2 * S;
-          ctx.beginPath();
-          ctx.moveTo(hx + Math.cos(ha) * 15 * S, hy + Math.sin(ha) * 15 * S);
-          ctx.lineTo(hx + Math.cos(ha + 0.5) * 7 * S, hy + Math.sin(ha + 0.5) * 7 * S);
-          ctx.lineTo(hx + Math.cos(ha + 2.6) * 6 * S, hy + Math.sin(ha + 2.6) * 6 * S);
-          ctx.lineTo(hx + Math.cos(ha - 2.6) * 6 * S, hy + Math.sin(ha - 2.6) * 6 * S);
-          ctx.lineTo(hx + Math.cos(ha - 0.5) * 7 * S, hy + Math.sin(ha - 0.5) * 7 * S);
-          ctx.closePath();
-          ctx.stroke();
-
-          ctx.shadowBlur = 18;
-          ctx.beginPath();
-          ctx.arc(
-            hx + Math.cos(ha) * 5 * S + Math.cos(ha + Math.PI / 2) * 2.8 * S,
-            hy + Math.sin(ha) * 5 * S + Math.sin(ha + Math.PI / 2) * 2.8 * S,
-            1.9 * S, 0, Math.PI * 2
-          );
-          ctx.fill();
-          ctx.shadowBlur = 14;
-
-          for (let g = 0; g < 5; g++) {
-            const gp = sampleTrail((6 + g * 3.5) * gap * 0.4);
-            const ga = directionAt((6 + g * 3.5) * gap * 0.4);
-            const gpx = Math.cos(ga + Math.PI / 2);
-            const gpy = Math.sin(ga + Math.PI / 2);
-            setStyle(0.65);
-            ctx.lineWidth = 1.15 * S;
-            ctx.beginPath();
-            ctx.moveTo(gp.x + gpx * 2.5 * S, gp.y + gpy * 2.5 * S);
-            ctx.lineTo(gp.x + gpx * 8 * S, gp.y + gpy * 8 * S);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(gp.x - gpx * 2.5 * S, gp.y - gpy * 2.5 * S);
-            ctx.lineTo(gp.x - gpx * 8 * S, gp.y - gpy * 8 * S);
-            ctx.stroke();
-            setStyle(1);
-          }
-        }
-
-        function draw(now) {
-          ctx.save();
-          if (type === 'shark') drawShark(now);
-          else drawDragon(now);
-          ctx.restore();
-          ctx.shadowBlur = 0;
-          ctx.globalAlpha = 1;
-        }
-
-        return { update, draw };
-      }
-
-      const creatures = [
-        createCreature({
-          type: 'dragon',
-          color: '#ff5c5c',
-          glowColor: 'rgba(255, 60, 60, 0.55)',
-          startX: innerWidth * 0.28,
-          startY: innerHeight * 0.58,
-          maxSpeed: 275,
-          maxTurn: 3.4,
-          gap: 4.6,
-          numSeg: 68,
-          scale: 1.35,
-          lag: 0
-        }),
-        createCreature({
-          type: 'shark',
-          color: '#5cb8ff',
-          glowColor: 'rgba(60, 160, 255, 0.55)',
-          startX: innerWidth * 0.72,
-          startY: innerHeight * 0.38,
-          startA: Math.PI,
-          maxSpeed: 300,
-          maxTurn: 3.7,
-          gap: 4.2,
-          numSeg: 58,
-          scale: 1.28,
-          lag: 0.12
-        })
-      ];
-
-      let last = performance.now();
-      let running = true;
-
-      function loop() {
-        if (!running || !document.body.classList.contains('locked')) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          return;
-        }
-        const now = performance.now();
-        const dt = Math.min(0.032, (now - last) / 1000);
-        last = now;
-        creatures.forEach((c) => c.update(dt, target.x, target.y));
-        ctx.clearRect(0, 0, innerWidth, innerHeight);
-        creatures.forEach((c) => c.draw(now));
-        requestAnimationFrame(loop);
-      }
-
-      const obs = new MutationObserver(() => {
-        if (!document.body.classList.contains('locked')) {
-          running = false;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          setTimeout(() => { canvas.style.display = 'none'; }, 600);
-          obs.disconnect();
-        }
-      });
-      obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-
-      requestAnimationFrame(loop);
-    })();
-
 
     /* ========== Soft custom cursor + trail ========== */
     const cursor = document.getElementById('cursor');
@@ -807,7 +350,7 @@
       }
       glowLoop();
 
-      document.querySelectorAll('a, button, .work-card, .progress, .ctrl-btn, .vol-slider, .share-btn').forEach((el) => {
+      document.querySelectorAll('a, button, .slide, .slider-btn, .progress, .ctrl-btn, .vol-slider, .share-btn').forEach((el) => {
         el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
         el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
       });
@@ -1021,44 +564,9 @@
     const volOffSvg = '<path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/>';
     const volLowSvg = '<path d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 0 1 0 7.08"/>';
 
-    // Time-synced lyrics (~3:44 local file)
+    // Time-synced lyrics (instrumental / no clear vocals)
     const lyricsTimeline = [
-      { t: 0,   text: '' },
-      { t: 12,  text: "When I see the devil's eyes" },
-      { t: 16,  text: "I'll look away and smile wide" },
-      { t: 20,  text: 'You found me' },
-      { t: 24,  text: "Then I'll know you're also there" },
-      { t: 28,  text: "'Cause proof is in the adversaire" },
-      { t: 33,  text: 'You found me' },
-      { t: 38,  text: 'A drag path etched in the surface' },
-      { t: 42,  text: 'As evidence I left there on purpose' },
-      { t: 47,  text: 'A sad sap laying on the surface' },
-      { t: 51,  text: 'Can you find me?' },
-      { t: 56,  text: "When I see the devil's eyes" },
-      { t: 60,  text: 'A current travels down my spine' },
-      { t: 65,  text: 'You found me' },
-      { t: 70,  text: 'A drag path etched in the surface' },
-      { t: 74,  text: 'As evidence I left there on purpose' },
-      { t: 79,  text: 'A sad sap laying on the surface' },
-      { t: 83,  text: 'Can you find me?' },
-      { t: 88,  text: 'I dug my heels into the gravel' },
-      { t: 93,  text: 'As evidence for you to unravel' },
-      { t: 98,  text: 'A drag path etched in the surface' },
-      { t: 103, text: 'Can you find me?' },
-      { t: 130, text: 'Can you, can you, can you, can you?' },
-      { t: 138, text: 'A drag path etched in the surface' },
-      { t: 142, text: 'As evidence I left there on purpose' },
-      { t: 147, text: 'A sad sap laying on the surface' },
-      { t: 151, text: 'Can you find me?' },
-      { t: 156, text: 'I dug my heels into the gravel' },
-      { t: 161, text: 'As evidence for you to unravel' },
-      { t: 166, text: 'A drag path etched in the surface' },
-      { t: 171, text: 'Can you find me?' },
-      { t: 178, text: 'Can you find me?' },
-      { t: 183, text: 'Can you find me?' },
-      { t: 188, text: 'Can you find me?' },
-      { t: 193, text: 'Can you find me?' },
-      { t: 210, text: '' }
+      { t: 0, text: '' }
     ];
     let lastLyricText = null;
 
@@ -1120,6 +628,11 @@
 
     function togglePlay() {
       if (audio.paused) {
+        const startAt = window.__audioStartAt || 0;
+        // ถ้ายังอยู่ก่อนจุดเริ่ม (รวมตอน loop กลับมา) → กระโดดไปจุดเริ่ม
+        if (startAt > 0 && audio.currentTime < startAt) {
+          audio.currentTime = startAt;
+        }
         audio.play().catch(() => {});
       } else {
         audio.pause();
@@ -1128,10 +641,19 @@
 
     audio.addEventListener('loadedmetadata', () => {
       durationEl.textContent = formatTime(audio.duration);
+      const startAt = window.__audioStartAt || 0;
+      if (startAt > 0 && audio.currentTime < startAt) {
+        audio.currentTime = startAt;
+      }
     });
 
     audio.addEventListener('timeupdate', () => {
       if (!audio.duration) return;
+      // หลัง loop กลับไปต้นไฟล์ → กระโดดไปจุดเริ่มธีม 222
+      const startAt = window.__audioStartAt || 0;
+      if (startAt > 0 && audio.currentTime < startAt - 0.15 && audio.currentTime < 1) {
+        audio.currentTime = startAt;
+      }
       const pct = (audio.currentTime / audio.duration) * 100;
       progressBar.style.width = pct + '%';
       progress.setAttribute('aria-valuenow', Math.round(pct));
@@ -1258,38 +780,183 @@
       if (e.target === lightbox) closeLightbox();
     });
 
-    document.querySelectorAll('.work-card').forEach((card) => {
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', () => {
-        const src = card.getAttribute('data-full') || card.querySelector('img')?.src;
-        const caption = card.getAttribute('data-caption') || card.querySelector('h3')?.textContent || '';
-        if (src) openLightbox(src, caption);
+    /* ========== Curved image slider (GSAP) ========== */
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const dotsEl = document.getElementById('sliderDots');
+      const prevBtn = document.getElementById('sliderPrev');
+      const nextBtn = document.getElementById('sliderNext');
+      if (!slides.length) return;
+
+      const N = slides.length;
+      let active = 0;
+      let animating = false;
+
+      // dots
+      slides.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        d.addEventListener('click', () => goTo(i));
+        dotsEl.appendChild(d);
+      });
+      const dots = Array.from(dotsEl.querySelectorAll('.slider-dot'));
+
+      function layout(instant) {
+        // coverflow / cylindrical arc (match classic GSAP curved slider)
+        const spacing = 195;
+        slides.forEach((slide, i) => {
+          let offset = i - active;
+          if (offset > N / 2) offset -= N;
+          if (offset < -N / 2) offset += N;
+
+          const abs = Math.abs(offset);
+          // stronger curve: more X spread + deeper Z + sharper Y rotation
+          const x = offset * spacing;
+          const z = -abs * abs * 55 - abs * 90;
+          const rotY = offset * -38;
+          const scale = 1 - abs * 0.14;
+          const opacity = abs > 2.6 ? 0 : 1 - abs * 0.18;
+          const blur = abs > 1.1 ? (abs - 1.1) * 2.8 : 0;
+          const zIndex = Math.round(100 - abs * 12);
+
+          slide.classList.toggle('is-center', offset === 0);
+          slide.style.zIndex = String(zIndex);
+
+          const props = {
+            x,
+            z,
+            rotationY: rotY,
+            scale: Math.max(0.68, scale),
+            opacity: Math.max(0, opacity),
+            filter: blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none',
+            duration: instant || reduceMotion ? 0 : 0.8,
+            ease: 'power3.out'
+          };
+
+          if (typeof gsap !== 'undefined') {
+            gsap.to(slide, props);
+          } else {
+            slide.style.transform =
+              `translateX(${x}px) translateZ(${z}px) rotateY(${rotY}deg) scale(${Math.max(0.68, scale)})`;
+            slide.style.opacity = String(Math.max(0, opacity));
+            slide.style.filter = blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none';
+          }
+        });
+
+        dots.forEach((d, i) => d.classList.toggle('active', i === active));
+      }
+
+      function goTo(index) {
+        if (animating) return;
+        active = ((index % N) + N) % N;
+        animating = true;
+        layout(false);
+        setTimeout(() => { animating = false; }, reduceMotion ? 0 : 400);
+      }
+
+      function next() { goTo(active + 1); }
+      function prev() { goTo(active - 1); }
+
+      prevBtn.addEventListener('click', prev);
+      nextBtn.addEventListener('click', next);
+
+      // click center opens lightbox; side cards navigate
+      slides.forEach((slide, i) => {
+        slide.addEventListener('click', (e) => {
+          if (i === active) {
+            const src = slide.getAttribute('data-full') || slide.querySelector('img')?.src;
+            const caption = slide.getAttribute('data-caption') || '';
+            if (src) openLightbox(src, caption);
+          } else {
+            goTo(i);
+          }
+        });
       });
 
-      // Soft 3D tilt on hover (after revealed)
-      if (!reduceMotion && !isTouch) {
-        card.addEventListener('mousemove', (e) => {
-          if (!card.classList.contains('in-view')) return;
-          const rect = card.getBoundingClientRect();
-          const x = (e.clientX - rect.left) / rect.width;
-          const y = (e.clientY - rect.top) / rect.height;
-          const rotY = (x - 0.5) * 12;
-          const rotX = (0.5 - y) * 10;
-          card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
-        });
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-        });
-      }
-    });
+      // drag / swipe
+      let dragStartX = 0;
+      let dragging = false;
+      const wrap = document.getElementById('sliderWrap');
 
-    /* ========== Scroll reveal (one-shot rotate-in) ========== */
+      function onPointerDown(e) {
+        dragging = true;
+        dragStartX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      }
+      function onPointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+        const x = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || dragStartX;
+        const dx = x - dragStartX;
+        if (Math.abs(dx) > 40) {
+          if (dx < 0) next();
+          else prev();
+        }
+      }
+
+      wrap.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mouseup', onPointerUp);
+      wrap.addEventListener('touchstart', onPointerDown, { passive: true });
+      window.addEventListener('touchend', onPointerUp, { passive: true });
+
+      // wheel — ตอบเฉพาะแนวนอน (หรือ Shift+scroll) ไม่บล็อกเลื่อนหน้าขึ้น-ลง
+      let wheelLock = false;
+      wrap.addEventListener('wheel', (e) => {
+        const absX = Math.abs(e.deltaX);
+        const absY = Math.abs(e.deltaY);
+        // แนวตั้งล้วน → ปล่อยให้หน้าเว็บเลื่อนตามปกติ
+        if (absY >= absX && !e.shiftKey) return;
+        // แนวนอนชัดเจน หรือกด Shift อยู่ → สลับสไลด์
+        if (absX < 2 && absY < 2) return;
+        e.preventDefault();
+        if (wheelLock) return;
+        wheelLock = true;
+        const dir = e.shiftKey ? e.deltaY : (absX >= absY ? e.deltaX : e.deltaY);
+        if (dir > 0) next();
+        else prev();
+        setTimeout(() => { wheelLock = false; }, 420);
+      }, { passive: false });
+
+      // keyboard — เฉพาะตอนโฟกัสอยู่ในโซน works
+      window.addEventListener('keydown', (e) => {
+        const works = document.getElementById('works');
+        if (!works) return;
+        const rect = works.getBoundingClientRect();
+        const inView = rect.top < innerHeight * 0.85 && rect.bottom > innerHeight * 0.15;
+        if (!inView) return;
+        if (e.code === 'ArrowLeft') { e.preventDefault(); prev(); }
+        if (e.code === 'ArrowRight') { e.preventDefault(); next(); }
+      });
+
+      // init after GSAP ready
+      function initSlider() {
+        if (typeof gsap !== 'undefined') {
+          gsap.set(slides, { transformPerspective: 1100, transformOrigin: '50% 50%', force3D: true });
+        }
+        layout(true);
+      }
+
+      if (typeof gsap !== 'undefined') initSlider();
+      else {
+        // wait for deferred GSAP
+        const wait = setInterval(() => {
+          if (typeof gsap !== 'undefined') {
+            clearInterval(wait);
+            initSlider();
+          }
+        }, 50);
+        setTimeout(() => { clearInterval(wait); layout(true); }, 2000);
+      }
+
+      window.addEventListener('resize', () => layout(true));
+    })();
+
+    /* ========== Scroll reveal (one-shot) ========== */
     const reveals = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
-          // โผล่ครั้งเดียว ไม่ย้อนกลับ
           io.unobserve(entry.target);
         }
       });
