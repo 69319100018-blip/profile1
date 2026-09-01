@@ -221,6 +221,34 @@
           <img src="monkey-roof.png" alt="Monkey on roof" draggable="false" />
           <span class="slide-caption">FiveM · roof monkey</span>
         </article>
+        <article class="slide" data-full="slide-officer-art.png" data-caption="Art · officer portrait">
+          <img src="6.png" alt="Officer portrait art" draggable="false" />
+          <span class="slide-caption">Art · officer portrait</span>
+        </article>
+        <article class="slide" data-full="slide-desert-chase.png" data-caption="FiveM · desert chase">
+          <img src="5.2.png" alt="Desert chase" draggable="false" />
+          <span class="slide-caption">FiveM · desert chase</span>
+        </article>
+        <article class="slide" data-full="slide-cockroach.png" data-caption="FiveM · park pest">
+          <img src="4.png" alt="Cockroach in park" draggable="false" />
+          <span class="slide-caption">FiveM · park pest</span>
+        </article>
+        <article class="slide" data-full="slide-medic-crew.png" data-caption="FiveM · medic crew">
+          <img src="3.png" alt="Medic crew" draggable="false" />
+          <span class="slide-caption">FiveM · medic crew</span>
+        </article>
+        <article class="slide" data-full="slide-crew-xero.png" data-caption="FiveM · xero crew">
+          <img src="2.png" alt="Xero crew" draggable="false" />
+          <span class="slide-caption">FiveM · xero crew</span>
+        </article>
+        <article class="slide" data-full="slide-bikers.png" data-caption="FiveM · highway bikers">
+          <img src="1.png" alt="Highway bikers" draggable="false" />
+          <span class="slide-caption">FiveM · highway bikers</span>
+        </article>
+         <article class="slide" data-full="slide-bikers.png" data-caption="FiveM · highway bikers">
+          <img src="7.png" alt="Highway bikers" draggable="false" />
+          <span class="slide-caption">FiveM · highway bikers</span>
+        </article>
       </div>
     </div>
 
@@ -233,7 +261,7 @@
       </button>
     </div>
     <div class="slider-dots" id="sliderDots" aria-hidden="true"></div>
-    <p class="slider-hint">drag · scroll · click</p>
+    <p class="slider-hint">auto · drag · scroll · click</p>
   </section>
 
   <!-- Footer -->
@@ -805,7 +833,7 @@
       if (e.target === lightbox) closeLightbox();
     });
 
-    /* ========== Curved image slider (GSAP) ========== */
+    /* ========== Curved 3D image slider (GSAP) ========== */
     (function () {
       const slides = Array.from(document.querySelectorAll('.slide'));
       const dotsEl = document.getElementById('sliderDots');
@@ -816,33 +844,37 @@
       const N = slides.length;
       let active = 0;
       let animating = false;
+      let autoTimer = null;
+      let paused = false;
+      let inView = false;
+      const AUTO_MS = 3400;
 
-      // dots
       slides.forEach((_, i) => {
         const d = document.createElement('button');
         d.className = 'slider-dot' + (i === 0 ? ' active' : '');
         d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-        d.addEventListener('click', () => goTo(i));
+        d.addEventListener('click', () => { goTo(i); bumpAuto(); });
         dotsEl.appendChild(d);
       });
       const dots = Array.from(dotsEl.querySelectorAll('.slider-dot'));
 
       function layout(instant) {
-        // coverflow / cylindrical arc (match classic GSAP curved slider)
-        const spacing = 195;
+        const spacing = 200;
         slides.forEach((slide, i) => {
           let offset = i - active;
           if (offset > N / 2) offset -= N;
           if (offset < -N / 2) offset += N;
 
           const abs = Math.abs(offset);
-          // stronger curve: more X spread + deeper Z + sharper Y rotation
+          // cylindrical 3D coverflow
           const x = offset * spacing;
-          const z = -abs * abs * 55 - abs * 90;
-          const rotY = offset * -38;
-          const scale = 1 - abs * 0.14;
-          const opacity = abs > 2.6 ? 0 : 1 - abs * 0.18;
-          const blur = abs > 1.1 ? (abs - 1.1) * 2.8 : 0;
+          const y = abs * abs * 6;
+          const z = -abs * abs * 70 - abs * 100;
+          const rotY = offset * -42;
+          const rotX = abs * 4;
+          const scale = 1 - abs * 0.13;
+          const opacity = abs > 2.8 ? 0 : 1 - abs * 0.16;
+          const blur = abs > 1.15 ? (abs - 1.15) * 3 : 0;
           const zIndex = Math.round(100 - abs * 12);
 
           slide.classList.toggle('is-center', offset === 0);
@@ -850,20 +882,23 @@
 
           const props = {
             x,
+            y,
             z,
             rotationY: rotY,
-            scale: Math.max(0.68, scale),
+            rotationX: rotX,
+            scale: Math.max(0.64, scale),
             opacity: Math.max(0, opacity),
             filter: blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none',
-            duration: instant || reduceMotion ? 0 : 0.8,
-            ease: 'power3.out'
+            duration: instant || reduceMotion ? 0 : 0.85,
+            ease: 'power3.out',
+            force3D: true
           };
 
           if (typeof gsap !== 'undefined') {
             gsap.to(slide, props);
           } else {
             slide.style.transform =
-              `translateX(${x}px) translateZ(${z}px) rotateY(${rotY}deg) scale(${Math.max(0.68, scale)})`;
+              `translate3d(${x}px, ${y}px, ${z}px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${Math.max(0.64, scale)})`;
             slide.style.opacity = String(Math.max(0, opacity));
             slide.style.filter = blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none';
           }
@@ -877,24 +912,37 @@
         active = ((index % N) + N) % N;
         animating = true;
         layout(false);
-        setTimeout(() => { animating = false; }, reduceMotion ? 0 : 400);
+        setTimeout(() => { animating = false; }, reduceMotion ? 0 : 420);
       }
 
       function next() { goTo(active + 1); }
       function prev() { goTo(active - 1); }
 
-      prevBtn.addEventListener('click', prev);
-      nextBtn.addEventListener('click', next);
+      function stopAuto() {
+        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+      }
+      function startAuto() {
+        stopAuto();
+        if (reduceMotion || paused || !inView) return;
+        autoTimer = setInterval(() => { if (!paused && !animating) next(); }, AUTO_MS);
+      }
+      function bumpAuto() {
+        stopAuto();
+        startAuto();
+      }
 
-      // click center opens lightbox; side cards navigate
+      prevBtn.addEventListener('click', () => { prev(); bumpAuto(); });
+      nextBtn.addEventListener('click', () => { next(); bumpAuto(); });
+
       slides.forEach((slide, i) => {
-        slide.addEventListener('click', (e) => {
+        slide.addEventListener('click', () => {
           if (i === active) {
             const src = slide.getAttribute('data-full') || slide.querySelector('img')?.src;
             const caption = slide.getAttribute('data-caption') || '';
             if (src) openLightbox(src, caption);
           } else {
             goTo(i);
+            bumpAuto();
           }
         });
       });
@@ -906,6 +954,8 @@
 
       function onPointerDown(e) {
         dragging = true;
+        paused = true;
+        stopAuto();
         dragStartX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
       }
       function onPointerUp(e) {
@@ -917,6 +967,8 @@
           if (dx < 0) next();
           else prev();
         }
+        paused = false;
+        bumpAuto();
       }
 
       wrap.addEventListener('mousedown', onPointerDown);
@@ -924,14 +976,15 @@
       wrap.addEventListener('touchstart', onPointerDown, { passive: true });
       window.addEventListener('touchend', onPointerUp, { passive: true });
 
-      // wheel — ตอบเฉพาะแนวนอน (หรือ Shift+scroll) ไม่บล็อกเลื่อนหน้าขึ้น-ลง
+      wrap.addEventListener('mouseenter', () => { paused = true; stopAuto(); });
+      wrap.addEventListener('mouseleave', () => { paused = false; startAuto(); });
+
+      // wheel — เฉพาะแนวนอน / Shift+scroll
       let wheelLock = false;
       wrap.addEventListener('wheel', (e) => {
         const absX = Math.abs(e.deltaX);
         const absY = Math.abs(e.deltaY);
-        // แนวตั้งล้วน → ปล่อยให้หน้าเว็บเลื่อนตามปกติ
         if (absY >= absX && !e.shiftKey) return;
-        // แนวนอนชัดเจน หรือกด Shift อยู่ → สลับสไลด์
         if (absX < 2 && absY < 2) return;
         e.preventDefault();
         if (wheelLock) return;
@@ -939,31 +992,64 @@
         const dir = e.shiftKey ? e.deltaY : (absX >= absY ? e.deltaX : e.deltaY);
         if (dir > 0) next();
         else prev();
+        bumpAuto();
         setTimeout(() => { wheelLock = false; }, 420);
       }, { passive: false });
 
-      // keyboard — เฉพาะตอนโฟกัสอยู่ในโซน works
       window.addEventListener('keydown', (e) => {
         const works = document.getElementById('works');
         if (!works) return;
         const rect = works.getBoundingClientRect();
-        const inView = rect.top < innerHeight * 0.85 && rect.bottom > innerHeight * 0.15;
-        if (!inView) return;
-        if (e.code === 'ArrowLeft') { e.preventDefault(); prev(); }
-        if (e.code === 'ArrowRight') { e.preventDefault(); next(); }
+        if (!(rect.top < innerHeight * 0.85 && rect.bottom > innerHeight * 0.15)) return;
+        if (e.code === 'ArrowLeft') { e.preventDefault(); prev(); bumpAuto(); }
+        if (e.code === 'ArrowRight') { e.preventDefault(); next(); bumpAuto(); }
       });
 
-      // init after GSAP ready
+      // autoplay only when section visible
+      const worksEl = document.getElementById('works');
+      if (worksEl && 'IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          inView = entries.some((en) => en.isIntersecting);
+          if (inView) startAuto();
+          else stopAuto();
+        }, { threshold: 0.25 }).observe(worksEl);
+      } else {
+        inView = true;
+      }
+
+      // subtle continuous float on center card
+      function floatLoop() {
+        if (reduceMotion || typeof gsap === 'undefined') return;
+        const center = slides[active];
+        if (center && !animating) {
+          gsap.to(center, {
+            y: '+=6',
+            duration: 1.8,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: 1,
+            overwrite: false
+          });
+        }
+        setTimeout(floatLoop, 4000);
+      }
+
       function initSlider() {
         if (typeof gsap !== 'undefined') {
-          gsap.set(slides, { transformPerspective: 1100, transformOrigin: '50% 50%', force3D: true });
+          gsap.set(slides, {
+            transformPerspective: 1000,
+            transformOrigin: '50% 50%',
+            force3D: true,
+            transformStyle: 'preserve-3d'
+          });
         }
         layout(true);
+        if (!reduceMotion) setTimeout(floatLoop, 1200);
+        startAuto();
       }
 
       if (typeof gsap !== 'undefined') initSlider();
       else {
-        // wait for deferred GSAP
         const wait = setInterval(() => {
           if (typeof gsap !== 'undefined') {
             clearInterval(wait);

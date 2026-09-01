@@ -262,8 +262,8 @@ h1 { font-size: clamp(26px,5vw,32px); font-weight: 700; letter-spacing: -0.02em;
 .works-header p { color: var(--muted); font-size: 14px; font-family: "DM Mono", monospace; letter-spacing: 0.04em; }
 
 .slider-wrap {
-  position: relative; width: 100%; height: min(56vh, 460px);
-  perspective: 1100px; perspective-origin: 50% 48%;
+  position: relative; width: 100%; height: min(58vh, 480px);
+  perspective: 1000px; perspective-origin: 50% 42%;
   user-select: none; -webkit-user-select: none; touch-action: pan-y;
   margin: 8px 0 4px;
 }
@@ -279,27 +279,62 @@ h1 { font-size: clamp(26px,5vw,32px); font-weight: 700; letter-spacing: -0.02em;
   border: 1px solid rgba(255,255,255,0.14);
   box-shadow:
     0 22px 60px rgba(0,0,0,0.65),
+    0 8px 24px rgba(0,0,0,0.35),
     0 0 0 1px rgba(255,255,255,0.05) inset;
   cursor: grab; transform-style: preserve-3d;
   will-change: transform, opacity, filter;
   backface-visibility: hidden;
 }
+.slide::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    125deg,
+    rgba(255,255,255,0.14) 0%,
+    transparent 32%,
+    transparent 62%,
+    rgba(255,255,255,0.04) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.slide.is-center::after {
+  opacity: 1;
+  animation: slideShine 4.5s ease-in-out infinite;
+}
+@keyframes slideShine {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
 .slide.is-center {
-  border-color: rgba(255,255,255,0.28);
+  border-color: rgba(255,255,255,0.32);
   box-shadow:
-    0 28px 70px rgba(0,0,0,0.7),
-    0 0 40px rgba(255,255,255,0.06),
-    0 0 0 1px rgba(255,255,255,0.08) inset;
+    0 32px 80px rgba(0,0,0,0.75),
+    0 0 50px rgba(255,255,255,0.08),
+    0 12px 28px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.1) inset;
 }
 .slide:active { cursor: grabbing; }
-.slide img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.slide img {
+  width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
+  /* คมชัดขึ้น: ลด scale ที่ทำให้นุ่ม + contrast/sharpen เบาๆ */
+  transform: none;
+  image-rendering: -webkit-optimize-contrast;
+  filter: contrast(1.06) saturate(1.04);
+  transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), filter 0.35s ease;
+}
+.slide.is-center img {
+  transform: none;
+  filter: contrast(1.1) saturate(1.06) brightness(1.02);
+}
 .slide-caption {
   position: absolute; left: 0; right: 0; bottom: 0;
   padding: 28px 14px 12px;
-  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
-  font: 12px "DM Mono", monospace; color: rgba(255,255,255,0.8); letter-spacing: 0.03em;
-  opacity: 0; transform: translateY(6px);
-  transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, transparent 100%);
+  font: 12px "DM Mono", monospace; color: rgba(255,255,255,0.85); letter-spacing: 0.03em;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none;
 }
 .slide.is-center .slide-caption { opacity: 1; transform: translateY(0); }
 .slider-hint {
@@ -414,6 +449,8 @@ h1 { font-size: clamp(26px,5vw,32px); font-weight: 700; letter-spacing: -0.02em;
 .lightbox img {
   max-width: min(92vw, 960px); max-height: 78vh; object-fit: contain; border-radius: 12px;
   box-shadow: 0 24px 80px rgba(0,0,0,0.6); transform: scale(0.96);
+  filter: contrast(1.08) saturate(1.05);
+  image-rendering: -webkit-optimize-contrast;
   transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
 }
 .lightbox.open img { transform: scale(1); }
@@ -520,3 +557,128 @@ h1 { font-size: clamp(26px,5vw,32px); font-weight: 700; letter-spacing: -0.02em;
 }
 
 
+
+/* ========== Extra polish ========== */
+
+/* Text selection */
+::selection {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+/* Custom scrollbar (WebKit + Firefox) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.32); background-clip: padding-box; }
+
+/* Keyboard focus rings */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.slider-btn:focus-visible,
+.slider-dot:focus-visible,
+.ctrl-btn:focus-visible,
+.socials a:focus-visible,
+.share-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 3px;
+}
+
+/* Profile card subtle hover lift */
+@media (hover: hover) and (pointer: fine) {
+  .profile {
+    transition:
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.55s ease,
+      border-color 0.4s ease;
+  }
+  .profile:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow:
+      0 32px 80px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+      0 0 48px rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* Bio soft highlight */
+.bio {
+  text-wrap: pretty;
+  position: relative;
+}
+.bio::first-line {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Works title underline draw */
+.works-header h2 {
+  display: inline-block;
+  position: relative;
+}
+.works-header h2::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 0; height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.55), transparent);
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.works-header.in-view h2::after { width: 72%; }
+
+/* Active slider dot pulse */
+.slider-dot.active {
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0); }
+}
+
+/* Player glass when listening */
+.status-pill.listening {
+  box-shadow: 0 0 20px rgba(109, 206, 138, 0.12);
+}
+.player:has(.viz.active) {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 28px rgba(255, 255, 255, 0.04);
+}
+
+/* Smooth image load */
+.slide img,
+.avatar img,
+.player-cover img {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Footer fade */
+.site-footer {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+.site-footer:hover { opacity: 1; }
+
+/* Noise layer slightly softer interaction */
+.noise { pointer-events: none; }
+
+/* Respect reduced motion for new anims */
+@media (prefers-reduced-motion: reduce) {
+  .slider-dot.active { animation: none !important; }
+  .works-header h2::after { transition: none; width: 72%; }
+  .profile { transition: none !important; }
+}
