@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="theme-222.css" />
+  <link rel="stylesheet" href="theme-noir.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body class="locked">
@@ -296,8 +297,13 @@
         banner.load();
       }
 
-      // 222.mp4 → ธีมอุ่น + เพลง Ariana remix (เริ่มที่ 0:33)
+      // ssstik.io (rain/kingslayer edit) → ธีม noir แดง-เหล็กเย็น
       window.__audioStartAt = 0;
+      if (pick === 'ssstik.io_@soul.blr_1779080280199.mp4') {
+        document.body.classList.add('theme-noir');
+      }
+
+      // 222.mp4 → ธีมอุ่น + เพลง Ariana remix (เริ่มที่ 0:33)
       if (pick === '222.mp4') {
         document.body.classList.add('theme-alt');
         window.__audioStartAt = 33;
