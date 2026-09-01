@@ -1,0 +1,175 @@
+/* =========================================================
+   theme-222.css — โทนพื้นหลัง 222.mp4
+   ใช้เมื่อ body มี class "theme-alt"
+   โทน: ชมพู–ม่วงอุ่น / soft night
+   ========================================================= */
+
+body.theme-alt {
+  --panel: rgba(28, 14, 24, 0.58);
+  --line: rgba(255, 160, 200, 0.18);
+  --soft: rgba(255, 140, 180, 0.1);
+  --muted: rgba(255, 220, 235, 0.62);
+  --glow: rgba(255, 120, 180, 0.22);
+  --listen: #ff8ec8;
+  --listen-bg: rgba(255, 120, 180, 0.14);
+  --listen-border: rgba(255, 140, 190, 0.35);
+  --progress: linear-gradient(90deg, #ff9ec8, #ffd0e8, #fff);
+  background: #12080e;
+}
+
+/* Video mood */
+body.theme-alt .video-bg video {
+  filter: brightness(0.52) contrast(1.08) saturate(1.15) hue-rotate(-8deg);
+}
+
+body.theme-alt .video-overlay {
+  background:
+    linear-gradient(165deg, rgba(40, 8, 24, 0.78) 0%, rgba(20, 4, 14, 0.4) 42%, rgba(18, 4, 12, 0.82) 100%),
+    radial-gradient(ellipse at 50% 28%, rgba(255, 80, 140, 0.12) 0%, transparent 55%, rgba(10, 2, 8, 0.75) 100%);
+}
+
+/* Scroll progress */
+body.theme-alt .scroll-progress {
+  background: linear-gradient(90deg, rgba(255, 140, 190, 0.55), rgba(255, 210, 230, 0.95));
+  box-shadow: 0 0 14px rgba(255, 120, 180, 0.35);
+}
+
+/* Enter gate */
+body.theme-alt .enter-inner::before {
+  background: radial-gradient(
+    circle,
+    rgba(255, 120, 180, 0.16) 0%,
+    rgba(255, 80, 140, 0.05) 40%,
+    transparent 70%
+  );
+}
+
+body.theme-alt .enter-name {
+  text-shadow:
+    0 2px 24px rgba(0, 0, 0, 0.4),
+    0 0 36px rgba(255, 120, 180, 0.25);
+}
+
+body.theme-alt .enter-avatar {
+  border-color: rgba(255, 200, 220, 0.85);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 8px rgba(255, 120, 180, 0.06),
+    0 0 40px rgba(255, 120, 180, 0.15);
+}
+
+/* Profile card */
+body.theme-alt .profile {
+  border-color: rgba(255, 160, 200, 0.2);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 140, 180, 0.06) inset,
+    0 0 48px rgba(255, 80, 140, 0.06);
+}
+
+body.theme-alt .avatar {
+  border-color: rgba(255, 200, 220, 0.9);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(255, 120, 180, 0.15);
+}
+
+body.theme-alt .name-scatter .letter.is-active {
+  color: #ffe0ee;
+  text-shadow: 0 0 18px rgba(255, 140, 190, 0.4);
+}
+
+/* Status / socials */
+body.theme-alt .status-pill {
+  background: rgba(255, 140, 180, 0.08);
+  border-color: rgba(255, 160, 200, 0.16);
+}
+
+body.theme-alt .socials a,
+body.theme-alt .share-btn {
+  background: rgba(255, 140, 180, 0.08);
+  border-color: rgba(255, 160, 200, 0.16);
+}
+
+body.theme-alt .socials a:hover,
+body.theme-alt .share-btn:hover {
+  background: rgba(255, 140, 180, 0.18);
+  border-color: rgba(255, 180, 210, 0.4);
+}
+
+/* Music player */
+body.theme-alt .player {
+  border-color: rgba(255, 160, 200, 0.18);
+  background: rgba(30, 8, 20, 0.45);
+}
+
+body.theme-alt .ctrl-btn {
+  background: rgba(255, 140, 180, 0.12);
+}
+
+body.theme-alt .ctrl-btn:hover {
+  background: rgba(255, 140, 180, 0.22);
+}
+
+body.theme-alt .ctrl-btn.play-btn {
+  background: rgba(255, 140, 180, 0.22);
+}
+
+body.theme-alt .ctrl-btn.play-btn:hover {
+  background: rgba(255, 140, 180, 0.35);
+}
+
+body.theme-alt .progress {
+  background: rgba(255, 160, 200, 0.14);
+}
+
+body.theme-alt .viz span {
+  background: rgba(255, 180, 210, 0.8);
+}
+
+/* Slider */
+body.theme-alt .slide {
+  border-color: rgba(255, 160, 200, 0.14);
+}
+
+body.theme-alt .slide.is-center {
+  border-color: rgba(255, 160, 200, 0.35);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(255, 100, 160, 0.12),
+    0 0 0 1px rgba(255, 160, 200, 0.1) inset;
+}
+
+body.theme-alt .slider-btn {
+  border-color: rgba(255, 160, 200, 0.2);
+  background: rgba(255, 140, 180, 0.08);
+}
+
+body.theme-alt .slider-btn:hover {
+  background: rgba(255, 140, 180, 0.18);
+  border-color: rgba(255, 180, 210, 0.4);
+}
+
+body.theme-alt .slider-dot.active {
+  background: rgba(255, 180, 210, 0.9);
+}
+
+/* Toast / footer */
+body.theme-alt .toast {
+  border-color: rgba(255, 160, 200, 0.2);
+  background: rgba(28, 10, 20, 0.92);
+}
+
+body.theme-alt .site-footer {
+  color: rgba(255, 200, 220, 0.35);
+}
+
+/* Cursor soft tint */
+body.theme-alt .cursor-glow {
+  background: radial-gradient(circle, rgba(255, 140, 190, 0.22) 0%, transparent 70%);
+}
+
+body.theme-alt .trail-dot {
+  background: rgba(255, 180, 210, 0.55);
+  box-shadow: 0 0 6px rgba(255, 120, 180, 0.25);
+}
