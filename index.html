@@ -51,15 +51,29 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="ดูรูปขนาดใหญ่" hidden>
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="ดูผลงานขนาดใหญ่" hidden>
     <button class="lightbox-close" id="lightboxClose" aria-label="ปิด">&times;</button>
-    <img id="lightboxImg" src="" alt="" />
+    <button type="button" class="lightbox-nav lb-prev" id="lightboxPrev" aria-label="ก่อนหน้า">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="lightbox-nav lb-next" id="lightboxNext" aria-label="ถัดไป">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="lightbox-frame">
+      <img id="lightboxImg" src="" alt="" />
+      <video id="lightboxVideo" playsinline controls hidden></video>
+    </div>
     <p class="lightbox-caption" id="lightboxCaption"></p>
+    <p class="lightbox-count" id="lightboxCount"></p>
   </div>
 
   <!-- ========== HERO / PROFILE ========== -->
   <section class="hero">
     <article class="profile" aria-label="Profile card">
+      <div class="bio-sparkles" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
       <div class="banner">
         <video id="bannerVideo" autoplay muted loop playsinline>
           <source src="" type="video/mp4" />
@@ -173,98 +187,43 @@
     </div>
   </section>
 
-  <!-- ========== WORKS / CURVED IMAGE SLIDER ========== -->
+  <!-- ========== WORKS · COVERFLOW ========== -->
   <section class="works" id="works" aria-label="ผลงาน">
     <header class="works-header reveal">
       <h2>ผลงาน · Works</h2>
-      <p>game clips · fiveM · photos · moments</p>
+      <p>coverflow · photos · clips</p>
     </header>
 
-    <div class="slider-wrap" id="sliderWrap">
-      <div class="slider-stage" id="sliderStage">
-        <article class="slide" data-full="image.png" data-caption="Light City · night drive">
-          <img src="image.png" alt="FiveM Light City" draggable="false" />
-          <span class="slide-caption">Light City · night drive</span>
-        </article>
-        <article class="slide" data-full="image1.png" data-caption="Talos · character still">
-          <img src="image1.png" alt="talos" draggable="false" />
-          <span class="slide-caption">Talos · character still</span>
-        </article>
-        <article class="slide" data-full="work-lightcity.png" data-caption="Light City · street lights">
-          <img src="work-lightcity.png" alt="FiveM Light City" draggable="false" />
-          <span class="slide-caption">Light City · street lights</span>
-        </article>
-        <article class="slide" data-full="talos.png" data-caption="Talos · portrait">
-          <img src="talos.png" alt="talos" draggable="false" />
-          <span class="slide-caption">Talos · portrait</span>
-        </article>
-        <article class="slide" data-full="35ffb9fc-7023-404c-ab7f-39dd9eb3000f.jpg" data-caption="FiveM · night scene">
-          <img src="35ffb9fc-7023-404c-ab7f-39dd9eb3000f.jpg" alt="FiveM night scene" draggable="false" />
-          <span class="slide-caption">FiveM · night scene</span>
-        </article>
-        <article class="slide" data-full="409e1687-d366-41a8-bccb-88c36313e09d.jpg" data-caption="FiveM · moment">
-          <img src="409e1687-d366-41a8-bccb-88c36313e09d.jpg" alt="FiveM moment" draggable="false" />
-          <span class="slide-caption">FiveM · moment</span>
-        </article>
-        <article class="slide" data-full="687089b8-09f9-4f2e-b01a-3ca0cbc752e9.jpg" data-caption="FiveM · clip">
-          <img src="687089b8-09f9-4f2e-b01a-3ca0cbc752e9.jpg" alt="FiveM clip" draggable="false" />
-          <span class="slide-caption">FiveM · clip</span>
-        </article>
-        <article class="slide" data-full="MedalTVGrandTheftAutoVFiveM20260705201322842.jpg" data-caption="FiveM · street">
-          <img src="MedalTVGrandTheftAutoVFiveM20260705201322842.jpg" alt="FiveM street" draggable="false" />
-          <span class="slide-caption">FiveM · street</span>
-        </article>
-        <article class="slide" data-full="MedalTVGrandTheftAutoVFiveM20260707224833032.thumbnail.jpg" data-caption="FiveM · thumbnail">
-          <img src="MedalTVGrandTheftAutoVFiveM20260707224833032.thumbnail.jpg" alt="FiveM thumbnail" draggable="false" />
-          <span class="slide-caption">FiveM · thumbnail</span>
-        </article>
-        <article class="slide" data-full="monkey-roof.png" data-caption="FiveM · roof monkey">
-          <img src="monkey-roof.png" alt="Monkey on roof" draggable="false" />
-          <span class="slide-caption">FiveM · roof monkey</span>
-        </article>
-        <article class="slide" data-full="slide-officer-art.png" data-caption="Art · officer portrait">
-          <img src="6.png" alt="Officer portrait art" draggable="false" />
-          <span class="slide-caption">Art · officer portrait</span>
-        </article>
-        <article class="slide" data-full="slide-desert-chase.png" data-caption="FiveM · desert chase">
-          <img src="5.2.png" alt="Desert chase" draggable="false" />
-          <span class="slide-caption">FiveM · desert chase</span>
-        </article>
-        <article class="slide" data-full="slide-cockroach.png" data-caption="FiveM · park pest">
-          <img src="4.png" alt="Cockroach in park" draggable="false" />
-          <span class="slide-caption">FiveM · park pest</span>
-        </article>
-        <article class="slide" data-full="slide-medic-crew.png" data-caption="FiveM · medic crew">
-          <img src="3.png" alt="Medic crew" draggable="false" />
-          <span class="slide-caption">FiveM · medic crew</span>
-        </article>
-        <article class="slide" data-full="slide-crew-xero.png" data-caption="FiveM · xero crew">
-          <img src="2.png" alt="Xero crew" draggable="false" />
-          <span class="slide-caption">FiveM · xero crew</span>
-        </article>
-        <article class="slide" data-full="slide-bikers.png" data-caption="FiveM · highway bikers">
-          <img src="1.png" alt="Highway bikers" draggable="false" />
-          <span class="slide-caption">FiveM · highway bikers</span>
-        </article>
-         <article class="slide" data-full="slide-bikers.png" data-caption="FiveM · highway bikers">
-          <img src="7.png" alt="Highway bikers" draggable="false" />
-          <span class="slide-caption">FiveM · highway bikers</span>
-        </article>
+    <div class="orbit-filters reveal" role="tablist" aria-label="ประเภทผลงาน">
+      <button type="button" class="orbit-filter is-active" data-filter="all" role="tab" aria-selected="true">ทั้งหมด</button>
+      <button type="button" class="orbit-filter" data-filter="photo" role="tab" aria-selected="false">ภาพ</button>
+      <button type="button" class="orbit-filter" data-filter="video" role="tab" aria-selected="false">วิดีโอ</button>
+    </div>
+
+    <div class="cf-stage reveal" id="cfStage">
+      <div class="cf-viewport" id="cfViewport">
+        <div class="cf-track" id="cfTrack"></div>
+      </div>
+
+      <div class="cf-meta">
+        <span class="orbit-tag" id="cfTag">photo</span>
+        <h3 class="cf-title" id="cfTitle">Light City · night drive</h3>
+        <p class="cf-sub" id="cfSub">FiveM still</p>
+      </div>
+
+      <div class="orbit-controls">
+        <button type="button" class="orbit-nav" id="cfPrev" aria-label="ก่อนหน้า">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="orbit-nav" id="cfNext" aria-label="ถัดไป">
+          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
       </div>
     </div>
 
-    <div class="slider-nav">
-      <button class="slider-btn" id="sliderPrev" aria-label="Previous">
-        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <button class="slider-btn" id="sliderNext" aria-label="Next">
-        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
-    <div class="slider-dots" id="sliderDots" aria-hidden="true"></div>
-    <p class="slider-hint">auto · drag · scroll · click</p>
+    <p class="orbit-hint">drag · click cover · autoflow</p>
   </section>
-   
+
   <!-- Footer -->
   <footer class="site-footer">
     <p>© 2026 talos blackagency · soft nights only</p>
@@ -409,7 +368,7 @@
       }
       glowLoop();
 
-      document.querySelectorAll('a, button, .slide, .slider-btn, .progress, .ctrl-btn, .vol-slider, .share-btn').forEach((el) => {
+      document.querySelectorAll('a, button, .slide, .slider-btn, .progress, .ctrl-btn, .vol-slider, .share-btn, .cf-cover').forEach((el) => {
         el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
         el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
       });
@@ -814,19 +773,63 @@
     /* ========== Lightbox ========== */
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxVideo = document.getElementById('lightboxVideo');
     const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxCount = document.getElementById('lightboxCount');
     const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxPrev = document.getElementById('lightboxPrev');
+    const lightboxNext = document.getElementById('lightboxNext');
+    let lbPool = [];
+    let lbIndex = 0;
 
-    function openLightbox(src, caption) {
-      lightboxImg.src = src;
-      lightboxCaption.textContent = caption || '';
+    function stopLightboxVideo() {
+      if (!lightboxVideo) return;
+      lightboxVideo.pause();
+      lightboxVideo.removeAttribute('src');
+      while (lightboxVideo.firstChild) lightboxVideo.removeChild(lightboxVideo.firstChild);
+      lightboxVideo.hidden = true;
+    }
+
+    function renderLightboxItem() {
+      const it = lbPool[lbIndex];
+      if (!it) return;
+      stopLightboxVideo();
+      if (it.type === 'video') {
+        lightboxImg.hidden = true;
+        lightboxImg.src = '';
+        lightboxVideo.hidden = false;
+        lightboxVideo.poster = it.poster || '';
+        const source = document.createElement('source');
+        source.src = it.src;
+        source.type = 'video/mp4';
+        lightboxVideo.appendChild(source);
+        lightboxVideo.load();
+        lightboxVideo.play().catch(() => {});
+      } else {
+        lightboxVideo.hidden = true;
+        lightboxImg.hidden = false;
+        lightboxImg.src = it.src;
+        lightboxImg.alt = it.caption;
+      }
+      lightboxCaption.textContent = it.caption || '';
+      if (lightboxCount) {
+        lightboxCount.textContent = (lbIndex + 1) + ' / ' + lbPool.length;
+      }
+    }
+
+    function openLightbox(pool, index) {
+      lbPool = pool && pool.length ? pool : [];
+      lbIndex = Math.max(0, Math.min(index || 0, lbPool.length - 1));
+      if (!lbPool.length) return;
       lightbox.hidden = false;
+      renderLightboxItem();
       requestAnimationFrame(() => lightbox.classList.add('open'));
       document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
       lightbox.classList.remove('open');
+      stopLightboxVideo();
       setTimeout(() => {
         lightbox.hidden = true;
         lightboxImg.src = '';
@@ -834,240 +837,306 @@
       }, 280);
     }
 
+    function lightboxGo(delta) {
+      if (!lbPool.length) return;
+      lbIndex = (lbIndex + delta + lbPool.length) % lbPool.length;
+      renderLightboxItem();
+    }
+
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
     });
+    lightboxPrev?.addEventListener('click', (e) => { e.stopPropagation(); lightboxGo(-1); });
+    lightboxNext?.addEventListener('click', (e) => { e.stopPropagation(); lightboxGo(1); });
 
-    /* ========== Curved 3D image slider (GSAP) ========== */
+    /* ========== Coverflow Showcase ========== */
     (function () {
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      const dotsEl = document.getElementById('sliderDots');
-      const prevBtn = document.getElementById('sliderPrev');
-      const nextBtn = document.getElementById('sliderNext');
-      if (!slides.length) return;
+      const items = [
+        { type: 'photo', src: 'image.png', caption: 'Light City · night drive', sub: 'FiveM still' },
+        { type: 'photo', src: 'image1.png', caption: 'Talos · character still', sub: 'Portrait' },
+        { type: 'photo', src: 'work-lightcity.png', caption: 'Light City · street lights', sub: 'Night city' },
+        { type: 'photo', src: 'talos.png', caption: 'Talos · portrait', sub: 'Character' },
+        { type: 'photo', src: '35ffb9fc-7023-404c-ab7f-39dd9eb3000f.jpg', caption: 'FiveM · night scene', sub: 'Scene' },
+        { type: 'photo', src: '409e1687-d366-41a8-bccb-88c36313e09d.jpg', caption: 'FiveM · moment', sub: 'Moment' },
+        { type: 'photo', src: '687089b8-09f9-4f2e-b01a-3ca0cbc752e9.jpg', caption: 'FiveM · clip still', sub: 'Still' },
+        { type: 'photo', src: 'MedalTVGrandTheftAutoVFiveM20260705201322842.jpg', caption: 'FiveM · street', sub: 'Street' },
+        { type: 'photo', src: 'MedalTVGrandTheftAutoVFiveM20260707224833032.thumbnail.jpg', caption: 'FiveM · thumbnail', sub: 'Capture' },
+        { type: 'photo', src: 'monkey-roof.png', caption: 'FiveM · roof monkey', sub: 'Fun' },
+        { type: 'photo', src: '6.png', caption: 'Art · officer portrait', sub: 'Art' },
+        { type: 'photo', src: '5.2.png', caption: 'FiveM · desert chase', sub: 'Action' },
+        { type: 'photo', src: '4.png', caption: 'FiveM · park pest', sub: 'Moment' },
+        { type: 'photo', src: '3.png', caption: 'FiveM · medic crew', sub: 'Crew' },
+        { type: 'photo', src: '2.png', caption: 'FiveM · xero crew', sub: 'Crew' },
+        { type: 'photo', src: '1.png', caption: 'FiveM · highway bikers', sub: 'Ride' },
+        { type: 'photo', src: '7.png', caption: 'FiveM · highway bikers', sub: 'Ride' },
+        { type: 'video', src: '1.1.mp4', poster: 'vid-1.1.jpg', caption: 'Clip 01 · FiveM moment', sub: '0:06 · gameplay' },
+        { type: 'video', src: '1.2.mp4', poster: 'vid-1.2.jpg', caption: 'Clip 02 · FiveM moment', sub: '0:13 · gameplay' },
+        { type: 'video', src: '1.3.mp4', poster: 'vid-1.3.jpg', caption: 'Clip 03 · FiveM moment', sub: '0:13 · gameplay' },
+        { type: 'video', src: '1.4.mp4', poster: 'vid-1.4.jpg', caption: 'Clip 04 · FiveM moment', sub: '0:13 · gameplay' }
+      ];
 
-      const N = slides.length;
+      const stage = document.getElementById('cfStage');
+      const track = document.getElementById('cfTrack');
+      const titleEl = document.getElementById('cfTitle');
+      const subEl = document.getElementById('cfSub');
+      const tagEl = document.getElementById('cfTag');
+      const prevBtn = document.getElementById('cfPrev');
+      const nextBtn = document.getElementById('cfNext');
+      const autoBtn = document.getElementById('cfAuto');
+      const filters = Array.from(document.querySelectorAll('.orbit-filter'));
+      if (!stage || !track) return;
+
+      let filter = 'all';
+      let pool = items.slice();
+      let pos = 0;
       let active = 0;
-      let animating = false;
-      let autoTimer = null;
-      let paused = false;
-      let inView = false;
-      const AUTO_MS = 3400;
-
-      slides.forEach((_, i) => {
-        const d = document.createElement('button');
-        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
-        d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-        d.addEventListener('click', () => { goTo(i); bumpAuto(); });
-        dotsEl.appendChild(d);
-      });
-      const dots = Array.from(dotsEl.querySelectorAll('.slider-dot'));
-
-      function layout(instant) {
-        const spacing = 200;
-        slides.forEach((slide, i) => {
-          let offset = i - active;
-          if (offset > N / 2) offset -= N;
-          if (offset < -N / 2) offset += N;
-
-          const abs = Math.abs(offset);
-          // cylindrical 3D coverflow
-          const x = offset * spacing;
-          const y = abs * abs * 6;
-          const z = -abs * abs * 70 - abs * 100;
-          const rotY = offset * -42;
-          const rotX = abs * 4;
-          const scale = 1 - abs * 0.13;
-          const opacity = abs > 2.8 ? 0 : 1 - abs * 0.16;
-          const blur = abs > 1.15 ? (abs - 1.15) * 3 : 0;
-          const zIndex = Math.round(100 - abs * 12);
-
-          slide.classList.toggle('is-center', offset === 0);
-          slide.style.zIndex = String(zIndex);
-
-          const props = {
-            x,
-            y,
-            z,
-            rotationY: rotY,
-            rotationX: rotX,
-            scale: Math.max(0.64, scale),
-            opacity: Math.max(0, opacity),
-            filter: blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none',
-            duration: instant || reduceMotion ? 0 : 0.85,
-            ease: 'power3.out',
-            force3D: true
-          };
-
-          if (typeof gsap !== 'undefined') {
-            gsap.to(slide, props);
-          } else {
-            slide.style.transform =
-              `translate3d(${x}px, ${y}px, ${z}px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${Math.max(0.64, scale)})`;
-            slide.style.opacity = String(Math.max(0, opacity));
-            slide.style.filter = blur > 0.1 ? `blur(${blur.toFixed(1)}px)` : 'none';
-          }
-        });
-
-        dots.forEach((d, i) => d.classList.toggle('active', i === active));
-      }
-
-      function goTo(index) {
-        if (animating) return;
-        active = ((index % N) + N) % N;
-        animating = true;
-        layout(false);
-        setTimeout(() => { animating = false; }, reduceMotion ? 0 : 420);
-      }
-
-      function next() { goTo(active + 1); }
-      function prev() { goTo(active - 1); }
-
-      function stopAuto() {
-        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-      }
-      function startAuto() {
-        stopAuto();
-        if (reduceMotion || paused || !inView) return;
-        autoTimer = setInterval(() => { if (!paused && !animating) next(); }, AUTO_MS);
-      }
-      function bumpAuto() {
-        stopAuto();
-        startAuto();
-      }
-
-      prevBtn.addEventListener('click', () => { prev(); bumpAuto(); });
-      nextBtn.addEventListener('click', () => { next(); bumpAuto(); });
-
-      slides.forEach((slide, i) => {
-        slide.addEventListener('click', () => {
-          if (i === active) {
-            const src = slide.getAttribute('data-full') || slide.querySelector('img')?.src;
-            const caption = slide.getAttribute('data-caption') || '';
-            if (src) openLightbox(src, caption);
-          } else {
-            goTo(i);
-            bumpAuto();
-          }
-        });
-      });
-
-      // drag / swipe
-      let dragStartX = 0;
+      let autoSpin = !reduceMotion;
       let dragging = false;
-      const wrap = document.getElementById('sliderWrap');
+      let lastX = 0;
+      let dragAcc = 0;
+      let autoTimer = null;
+      let nodes = [];
 
-      function onPointerDown(e) {
-        dragging = true;
-        paused = true;
-        stopAuto();
-        dragStartX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      function visiblePool() {
+        if (filter === 'all') return items.slice();
+        return items.filter((it) => it.type === filter);
       }
-      function onPointerUp(e) {
+
+      function pauseCoverVideos() {
+        nodes.forEach((el) => {
+          const v = el.querySelector('video');
+          if (v) { v.pause(); v.currentTime = 0; }
+        });
+      }
+
+      function buildCovers() {
+        pool = visiblePool();
+        if (!pool.length) pool = items.slice();
+        pos = Math.min(pos, pool.length - 1);
+        if (pos < 0) pos = 0;
+        active = Math.round(pos);
+        track.innerHTML = '';
+        nodes = pool.map((it, i) => {
+          const el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'cf-cover' + (it.type === 'video' ? ' is-video' : '');
+          el.setAttribute('aria-label', it.caption);
+
+          const face = document.createElement('div');
+          face.className = 'cf-face';
+
+          const thumb = document.createElement('img');
+          thumb.src = it.type === 'video' ? (it.poster || it.src) : it.src;
+          thumb.alt = '';
+          thumb.draggable = false;
+          face.appendChild(thumb);
+
+          if (it.type === 'video') {
+            const vid = document.createElement('video');
+            vid.playsInline = true;
+            vid.preload = 'none';
+            vid.muted = true;
+            vid.loop = true;
+            vid.poster = it.poster || '';
+            vid.setAttribute('src', it.src);
+            face.appendChild(vid);
+
+            const badge = document.createElement('span');
+            badge.className = 'cf-badge';
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            face.appendChild(badge);
+          }
+
+          el.appendChild(face);
+
+          const reflect = document.createElement('div');
+          reflect.className = 'cf-reflect';
+          const rimg = document.createElement('img');
+          rimg.src = it.type === 'video' ? (it.poster || it.src) : it.src;
+          rimg.alt = '';
+          rimg.draggable = false;
+          reflect.appendChild(rimg);
+          el.appendChild(reflect);
+
+          el.addEventListener('click', (e) => {
+            if (Math.abs(dragAcc) > 14) return;
+            const idx = Math.round(pos);
+            if (i === idx) {
+              openLightbox(pool, i);
+            } else {
+              goTo(i, true);
+              bumpAuto();
+            }
+          });
+          track.appendChild(el);
+          return el;
+        });
+        layout(false);
+        showMeta();
+      }
+
+      function layout(animate) {
+        const n = nodes.length || 1;
+        const mobile = window.innerWidth < 640;
+        const step = mobile ? 88 : 124;
+        const jut = mobile ? 42 : 72;
+        stage.classList.toggle('is-dragging', dragging);
+        nodes.forEach((el, i) => {
+          let d = i - pos;
+          if (d > n / 2) d -= n;
+          if (d < -n / 2) d += n;
+          const abs = Math.abs(d);
+          const sign = abs < 0.001 ? 0 : (d < 0 ? -1 : 1);
+          const x = d * step + sign * jut;
+          const rot = sign * -64;
+          const z = (1 - Math.min(abs, 1)) * 170 - abs * 18;
+          el.style.transition = (animate && !dragging && !reduceMotion)
+            ? 'transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease'
+            : (dragging || reduceMotion ? 'none' : '');
+          el.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${rot}deg)`;
+          el.style.zIndex = String(Math.round(120 - abs * 6));
+          el.style.opacity = abs > 6.2 ? '0' : String(Math.max(0.28, 1 - abs * 0.11));
+          el.style.visibility = abs > 7 ? 'hidden' : 'visible';
+          el.classList.toggle('is-active', Math.round(pos) === i);
+          el.classList.toggle('is-side', abs >= 0.45);
+          el.tabIndex = Math.round(pos) === i ? 0 : -1;
+        });
+      }
+
+      function showMeta() {
+        const it = pool[Math.round(pos)];
+        if (!it) return;
+        if (titleEl) titleEl.textContent = it.caption;
+        if (subEl) subEl.textContent = it.sub || '';
+        if (tagEl) {
+          tagEl.textContent = it.type;
+          tagEl.dataset.type = it.type;
+        }
+      }
+
+      function goTo(index, animate) {
+        if (!pool.length) return;
+        pauseCoverVideos();
+        const n = pool.length;
+        pos = ((index % n) + n) % n;
+        active = Math.round(pos);
+        layout(animate !== false);
+        showMeta();
+      }
+
+      function go(delta) {
+        goTo(Math.round(pos) + delta, true);
+      }
+
+      function bumpAuto() {
+        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+        if (!autoSpin || reduceMotion) return;
+        autoTimer = setInterval(() => {
+          if (dragging || (lightbox && !lightbox.hidden)) return;
+          go(1);
+        }, 3800);
+      }
+
+      filters.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          filters.forEach((b) => {
+            b.classList.toggle('is-active', b === btn);
+            b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+          });
+          filter = btn.getAttribute('data-filter') || 'all';
+          pos = 0;
+          buildCovers();
+          bumpAuto();
+        });
+      });
+
+      prevBtn?.addEventListener('click', () => { go(-1); bumpAuto(); });
+      nextBtn?.addEventListener('click', () => { go(1); bumpAuto(); });
+
+      autoBtn?.addEventListener('click', () => {
+        autoSpin = !autoSpin;
+        autoBtn.classList.toggle('is-on', autoSpin);
+        autoBtn.setAttribute('aria-pressed', autoSpin ? 'true' : 'false');
+        bumpAuto();
+      });
+      if (autoBtn) {
+        autoBtn.classList.toggle('is-on', autoSpin);
+        autoBtn.setAttribute('aria-pressed', autoSpin ? 'true' : 'false');
+      }
+
+      function onDown(e) {
+        if (e.target.closest('.orbit-controls')) return;
+        dragging = true;
+        lastX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+        dragAcc = 0;
+        stage.classList.add('is-dragging');
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        const x = e.clientX ?? e.touches?.[0]?.clientX ?? lastX;
+        const dx = x - lastX;
+        lastX = x;
+        dragAcc += dx;
+        const width = Math.max(window.innerWidth, 360);
+        pos -= dx / (width * 0.16);
+        pos = Math.max(-0.85, Math.min(pool.length - 0.15, pos));
+        layout(false);
+      }
+      function onUp() {
         if (!dragging) return;
         dragging = false;
-        const x = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || dragStartX;
-        const dx = x - dragStartX;
-        if (Math.abs(dx) > 40) {
-          if (dx < 0) next();
-          else prev();
+        stage.classList.remove('is-dragging');
+        if (Math.abs(dragAcc) < 8) {
+          pos = Math.round(pos);
+        } else {
+          pos = Math.round(pos);
         }
-        paused = false;
+        goTo(pos, true);
         bumpAuto();
       }
 
-      wrap.addEventListener('mousedown', onPointerDown);
-      window.addEventListener('mouseup', onPointerUp);
-      wrap.addEventListener('touchstart', onPointerDown, { passive: true });
-      window.addEventListener('touchend', onPointerUp, { passive: true });
-
-      wrap.addEventListener('mouseenter', () => { paused = true; stopAuto(); });
-      wrap.addEventListener('mouseleave', () => { paused = false; startAuto(); });
-
-      // wheel — เฉพาะแนวนอน / Shift+scroll
-      let wheelLock = false;
-      wrap.addEventListener('wheel', (e) => {
-        const absX = Math.abs(e.deltaX);
-        const absY = Math.abs(e.deltaY);
-        if (absY >= absX && !e.shiftKey) return;
-        if (absX < 2 && absY < 2) return;
-        e.preventDefault();
-        if (wheelLock) return;
-        wheelLock = true;
-        const dir = e.shiftKey ? e.deltaY : (absX >= absY ? e.deltaX : e.deltaY);
-        if (dir > 0) next();
-        else prev();
-        bumpAuto();
-        setTimeout(() => { wheelLock = false; }, 420);
-      }, { passive: false });
+      stage.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+      stage.addEventListener('touchstart', onDown, { passive: true });
+      window.addEventListener('touchmove', onMove, { passive: true });
+      window.addEventListener('touchend', onUp, { passive: true });
 
       window.addEventListener('keydown', (e) => {
-        const works = document.getElementById('works');
-        if (!works) return;
-        const rect = works.getBoundingClientRect();
-        if (!(rect.top < innerHeight * 0.85 && rect.bottom > innerHeight * 0.15)) return;
-        if (e.code === 'ArrowLeft') { e.preventDefault(); prev(); bumpAuto(); }
-        if (e.code === 'ArrowRight') { e.preventDefault(); next(); bumpAuto(); }
+        if (lightbox && !lightbox.hidden) {
+          if (e.code === 'ArrowLeft') { e.preventDefault(); lightboxGo(-1); }
+          if (e.code === 'ArrowRight') { e.preventDefault(); lightboxGo(1); }
+          return;
+        }
+        const rect = stage.getBoundingClientRect();
+        if (!(rect.top < innerHeight * 0.92 && rect.bottom > innerHeight * 0.08)) return;
+        if (e.code === 'ArrowLeft') { e.preventDefault(); go(-1); bumpAuto(); }
+        if (e.code === 'ArrowRight') { e.preventDefault(); go(1); bumpAuto(); }
+        if (e.code === 'Enter') {
+          const it = pool[Math.round(pos)];
+          if (it) openLightbox(pool, Math.round(pos));
+        }
       });
 
-      // autoplay only when section visible
-      const worksEl = document.getElementById('works');
-      if (worksEl && 'IntersectionObserver' in window) {
+      window.addEventListener('resize', () => layout(false));
+
+      if ('IntersectionObserver' in window) {
         new IntersectionObserver((entries) => {
-          inView = entries.some((en) => en.isIntersecting);
-          if (inView) startAuto();
-          else stopAuto();
-        }, { threshold: 0.25 }).observe(worksEl);
-      } else {
-        inView = true;
-      }
-
-      // subtle continuous float on center card
-      function floatLoop() {
-        if (reduceMotion || typeof gsap === 'undefined') return;
-        const center = slides[active];
-        if (center && !animating) {
-          gsap.to(center, {
-            y: '+=6',
-            duration: 1.8,
-            ease: 'sine.inOut',
-            yoyo: true,
-            repeat: 1,
-            overwrite: false
-          });
-        }
-        setTimeout(floatLoop, 4000);
-      }
-
-      function initSlider() {
-        if (typeof gsap !== 'undefined') {
-          gsap.set(slides, {
-            transformPerspective: 1000,
-            transformOrigin: '50% 50%',
-            force3D: true,
-            transformStyle: 'preserve-3d'
-          });
-        }
-        layout(true);
-        if (!reduceMotion) setTimeout(floatLoop, 1200);
-        startAuto();
-      }
-
-      if (typeof gsap !== 'undefined') initSlider();
-      else {
-        const wait = setInterval(() => {
-          if (typeof gsap !== 'undefined') {
-            clearInterval(wait);
-            initSlider();
+          const on = entries.some((en) => en.isIntersecting);
+          if (!on) {
+            if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+            pauseCoverVideos();
+          } else {
+            bumpAuto();
           }
-        }, 50);
-        setTimeout(() => { clearInterval(wait); layout(true); }, 2000);
+        }, { threshold: 0.18 }).observe(document.getElementById('works') || stage);
       }
 
-      window.addEventListener('resize', () => layout(true));
+      pos = 0;
+      buildCovers();
+      bumpAuto();
     })();
-
     /* ========== Scroll reveal (one-shot) ========== */
     const reveals = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries) => {
