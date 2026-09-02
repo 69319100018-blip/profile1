@@ -313,6 +313,83 @@
       }
     })();
 
+    /* ========== Hidden background shortcuts ========== */
+    (function () {
+      const clips = {
+        Numpad1: 'ssstik.io_@soul.blr_1779080280199.mp4',
+        Numpad2: '222.mp4',
+        Numpad3: 'capitano.mp4'
+      };
+      const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano'];
+
+      function switchBackground(clip) {
+        const bg = document.getElementById('bgVideo');
+        const banner = document.getElementById('bannerVideo');
+        const audio = document.getElementById('audio');
+        const wasPlaying = audio && !audio.paused;
+        const isAlt = clip === '222.mp4';
+        const isCapitano = clip === 'capitano.mp4';
+
+        window.__bgClip = clip;
+        window.__audioStartAt = isAlt ? 33 : 0;
+        document.body.classList.remove(...themeClasses);
+        if (clip === 'ssstik.io_@soul.blr_1779080280199.mp4') document.body.classList.add('theme-noir');
+        if (isAlt) document.body.classList.add('theme-alt');
+        if (isCapitano) document.body.classList.add('theme-capitano');
+
+        [bg, banner].forEach((video) => {
+          const source = video && video.querySelector('source');
+          if (source) source.src = clip;
+          if (video) { video.load(); video.play().catch(() => {}); }
+        });
+
+        const profileImage = clip === 'ssstik.io_@soul.blr_1779080280199.mp4'
+          ? 'photo.png'
+          : 'photo.png';
+        document.querySelectorAll('.enter-avatar img, .avatar img, .player-cover img').forEach((img) => {
+          img.src = profileImage;
+        });
+
+        if (audio) {
+          const source = audio.querySelector('source');
+          if (source) source.src = isAlt
+            ? 'bye-into-you-remix.mp3'
+            : (isCapitano ? 'Halsey-Gasoline(instrumental).mp3' : 'Insomnia slowed reverb.mp3');
+          audio.load();
+          if (wasPlaying) {
+            audio.addEventListener('canplay', () => {
+              if (window.__audioStartAt) audio.currentTime = window.__audioStartAt;
+              audio.play().catch(() => {});
+            }, { once: true });
+          }
+        }
+
+        const title = document.getElementById('playerTitle');
+        const artist = document.getElementById('playerArtist');
+        const duration = document.getElementById('duration');
+        if (isAlt) {
+          if (title) title.textContent = 'bye × Into You';
+          if (artist) artist.textContent = 'Ariana Grande · Altare Remix';
+          if (duration) duration.textContent = '9:50';
+        } else if (isCapitano) {
+          if (title) title.textContent = 'Gasoline';
+          if (artist) artist.textContent = 'Halsey · instrumental';
+          if (duration) duration.textContent = '0:00';
+        } else {
+          if (title) title.textContent = 'Insomnia';
+          if (artist) artist.textContent = 'slowed + reverb';
+          if (duration) duration.textContent = '0:00';
+        }
+      }
+
+      window.addEventListener('keydown', (event) => {
+        const clip = clips[event.code];
+        if (!clip || event.target.matches('input, textarea, [contenteditable="true"]')) return;
+        event.preventDefault();
+        switchBackground(clip);
+      });
+    })();
+
     /* ========== Enter gate ========== */
     const enterGate = document.getElementById('enterGate');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
