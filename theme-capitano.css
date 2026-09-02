@@ -1,0 +1,87 @@
+/* =========================================================
+   theme-capitano.css - Capitano blue and white mood
+   body.theme-capitano
+   ========================================================= */
+
+body.theme-capitano {
+  --ink: #f4f8ff;
+  --panel: rgba(8, 20, 38, 0.64);
+  --line: rgba(155, 205, 255, 0.24);
+  --soft: rgba(120, 185, 255, 0.11);
+  --muted: rgba(205, 226, 250, 0.68);
+  --glow: rgba(95, 175, 255, 0.24);
+  --listen: #9ed2ff;
+  --listen-bg: rgba(90, 165, 240, 0.16);
+  --listen-border: rgba(145, 205, 255, 0.42);
+  --progress: linear-gradient(90deg, #72b8ff, #c9e6ff, #fff);
+  background: #061221;
+}
+
+body.theme-capitano .video-bg video {
+  filter: brightness(0.5) contrast(1.1) saturate(0.8) hue-rotate(170deg);
+}
+
+body.theme-capitano .banner video {
+  object-position: center 15%;
+}
+
+body.theme-capitano .video-overlay {
+  background:
+    linear-gradient(165deg, rgba(3, 14, 30, 0.76) 0%, rgba(8, 28, 55, 0.34) 45%, rgba(2, 8, 18, 0.84) 100%),
+    radial-gradient(ellipse at 50% 28%, rgba(80, 170, 255, 0.14) 0%, transparent 58%, rgba(1, 5, 13, 0.7) 100%);
+}
+
+body.theme-capitano .video-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  box-shadow: inset 0 0 170px rgba(0, 5, 14, 0.72), inset 0 0 55px rgba(90, 175, 255, 0.08);
+  pointer-events: none;
+}
+
+body.theme-capitano .profile {
+  border-color: rgba(150, 205, 255, 0.26);
+  background: linear-gradient(165deg, rgba(12, 30, 54, 0.7), rgba(5, 15, 30, 0.6));
+  box-shadow: 0 30px 80px rgba(0, 5, 15, 0.65), 0 0 0 1px rgba(130, 195, 255, 0.08) inset, 0 0 60px rgba(55, 135, 220, 0.1);
+}
+
+body.theme-capitano .avatar,
+body.theme-capitano .enter-avatar {
+  border-color: rgba(205, 232, 255, 0.9);
+  box-shadow: 0 10px 30px rgba(0, 8, 20, 0.55), 0 0 30px rgba(85, 170, 255, 0.2);
+}
+
+body.theme-capitano .status-pill,
+body.theme-capitano .socials a,
+body.theme-capitano .share-btn,
+body.theme-capitano .ctrl-btn.play-btn {
+  background: rgba(95, 175, 255, 0.14);
+  border-color: rgba(145, 205, 255, 0.24);
+}
+
+body.theme-capitano .socials a:hover,
+body.theme-capitano .share-btn:hover,
+body.theme-capitano .ctrl-btn:hover {
+  background: rgba(120, 195, 255, 0.24);
+  border-color: rgba(190, 225, 255, 0.52);
+}
+
+body.theme-capitano .player {
+  border-color: rgba(145, 205, 255, 0.24);
+  background: rgba(7, 24, 45, 0.5);
+}
+
+body.theme-capitano .orbit-filter.is-active,
+body.theme-capitano .cf-cover.is-active .cf-face {
+  border-color: rgba(175, 220, 255, 0.72);
+  box-shadow: 0 28px 70px rgba(0, 5, 15, 0.6), 0 0 42px rgba(70, 155, 245, 0.2);
+}
+
+body.theme-capitano .cf-stage::before {
+  background: radial-gradient(circle, rgba(95, 180, 255, 0.14) 0%, transparent 70%);
+}
+
+body.theme-capitano .trail-dot {
+  background: rgba(190, 225, 255, 0.62);
+  box-shadow: 0 0 8px rgba(90, 175, 255, 0.3);
+}

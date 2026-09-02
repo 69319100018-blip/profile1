@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="theme-222.css" />
   <link rel="stylesheet" href="theme-noir.css" />
+  <link rel="stylesheet" href="theme-capitano.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body class="locked">
@@ -238,7 +239,8 @@
     (function () {
       const clips = [
         'ssstik.io_@soul.blr_1779080280199.mp4',
-        '222.mp4'
+        '222.mp4',
+        'capitano.mp4'
       ];
       const pick = clips[Math.floor(Math.random() * clips.length)];
       window.__bgClip = pick;
@@ -266,6 +268,20 @@
       window.__audioStartAt = 0;
       if (pick === 'ssstik.io_@soul.blr_1779080280199.mp4') {
         document.body.classList.add('theme-noir');
+      }
+
+      if (pick === 'capitano.mp4') {
+        document.body.classList.add('theme-capitano');
+        const audio = document.getElementById('audio');
+        const srcEl = audio && audio.querySelector('source');
+        if (srcEl) {
+          srcEl.src = 'Halsey-Gasoline(instrumental).mp3';
+          audio.load();
+        }
+        const title = document.getElementById('playerTitle');
+        const artist = document.getElementById('playerArtist');
+        if (title) title.textContent = 'Gasoline';
+        if (artist) artist.textContent = 'Halsey · instrumental';
       }
 
       // 222.mp4 → ธีมอุ่น + เพลง Ariana remix (เริ่มที่ 0:33)
@@ -445,7 +461,7 @@
     /* ========== Typing effect (tagline) ========== */
     const typedEl = document.querySelector('.typed');
     const caretEl = document.querySelector('.caret');
-    const phrases = ['quiet soul · soft nights', 'เก็บความเงียบไว้', 'slow songs · blurry lights'];
+    const phrases = ['your eye not glowing ','not like the day we met','slow songs · blurry lights'];
     let phraseIdx = 0, charIdx = 0, deleting = false;
 
     function typeLoop() {
