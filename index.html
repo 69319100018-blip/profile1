@@ -242,6 +242,12 @@
       ];
       const pick = clips[Math.floor(Math.random() * clips.length)];
       window.__bgClip = pick;
+      const profileImage = pick === 'ssstik.io_@soul.blr_1779080280199.mp4'
+        ? 'photo.png'
+        : 'photo.png';
+      document.querySelectorAll('.enter-avatar img, .avatar img, .player-cover img').forEach((img) => {
+        img.src = profileImage;
+      });
 
       const bg = document.getElementById('bgVideo');
       const banner = document.getElementById('bannerVideo');

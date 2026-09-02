@@ -183,6 +183,16 @@ body.theme-noir .avatar {
     0 0 28px rgba(150, 35, 45, 0.14);
   animation: noirGlow 5s ease-in-out infinite;
 }
+body.theme-noir .avatar img 
+{ 
+  transform: translateY(1px);
+  transform: translateX(2px); 
+}
+body.theme-noir .enter-avatar img 
+{ 
+  transform: translateX(2px);
+  
+}
 
 body.theme-noir .name-scatter .letter.is-active {
   color: #ffe8e8;
