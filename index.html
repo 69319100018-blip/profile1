@@ -322,7 +322,6 @@
         Numpad3: 'capitano.mp4'
       };
       const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-secret'];
-      let previousTheme = null;
       const isEditableTarget = (target) => target instanceof Element && target.matches('input, textarea, [contenteditable="true"]');
 
       function switchBackground(clip) {
@@ -389,13 +388,6 @@
         if (event.code === 'Numpad4' && !isEditableTarget(event.target)) {
           event.preventDefault();
           const isSecret = document.body.classList.toggle('theme-secret');
-          if (isSecret) {
-            previousTheme = themeClasses.find((theme) => document.body.classList.contains(theme) && theme !== 'theme-secret') || null;
-            document.body.classList.remove('theme-noir', 'theme-alt', 'theme-capitano');
-          } else if (previousTheme) {
-            document.body.classList.add(previousTheme);
-            previousTheme = null;
-          }
           if (typeof showToast === 'function') {
             showToast(isSecret ? 'secret bio · on' : 'secret bio · off');
           }
