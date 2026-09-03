@@ -322,8 +322,6 @@
         Numpad3: 'capitano.mp4'
       };
       const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-secret'];
-      let previousTheme = null;
-      const isEditableTarget = (target) => target instanceof Element && target.matches('input, textarea, [contenteditable="true"]');
 
       function switchBackground(clip) {
         const bg = document.getElementById('bgVideo');
@@ -386,23 +384,16 @@
       }
 
       window.addEventListener('keydown', (event) => {
-        if (event.code === 'Numpad4' && !isEditableTarget(event.target)) {
+        if (event.code === 'Numpad4' && !event.target.matches('input, textarea, [contenteditable="true"]')) {
           event.preventDefault();
-          const isSecret = document.body.classList.toggle('theme-secret');
-          if (isSecret) {
-            previousTheme = themeClasses.find((theme) => document.body.classList.contains(theme) && theme !== 'theme-secret') || null;
-            document.body.classList.remove('theme-noir', 'theme-alt', 'theme-capitano');
-          } else if (previousTheme) {
-            document.body.classList.add(previousTheme);
-            previousTheme = null;
-          }
+          document.body.classList.toggle('theme-secret');
           if (typeof showToast === 'function') {
-            showToast(isSecret ? 'secret bio · on' : 'secret bio · off');
+            showToast(document.body.classList.contains('theme-secret') ? 'secret bio · on' : 'secret bio · off');
           }
           return;
         }
         const clip = clips[event.code];
-        if (!clip || isEditableTarget(event.target)) return;
+        if (!clip || event.target.matches('input, textarea, [contenteditable="true"]')) return;
         event.preventDefault();
         switchBackground(clip);
       });
@@ -1412,6 +1403,130 @@
       lerpLoop();
     }
     
+
+    /* ========== RGB NEURAL TERMINAL 3.0 / interaction layer ========== */
+    (() => {
+      const body = document.body;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isTouch = matchMedia('(hover: none), (pointer: coarse)').matches;
+      const profileEl = document.querySelector('.profile');
+      const audioEl = document.getElementById('audio');
+
+      // 02/03/09: live pointer coordinates for holographic refraction + HUD.
+      if (profileEl && !reduce && !isTouch) {
+        window.addEventListener('mousemove', (e) => {
+          const r = profileEl.getBoundingClientRect();
+          const mx = ((e.clientX - r.left) / Math.max(1, r.width) - .5) * 100;
+          const my = ((e.clientY - r.top) / Math.max(1, r.height) - .5) * 100;
+          profileEl.style.setProperty('--mx', mx.toFixed(2));
+          profileEl.style.setProperty('--my', my.toFixed(2));
+        }, { passive: true });
+        profileEl.addEventListener('mouseleave', () => {
+          profileEl.style.setProperty('--mx', '0');
+          profileEl.style.setProperty('--my', '0');
+        });
+      }
+
+      // 05: Numpad8 toggles RGB Overdrive. Numpad4 still controls secret theme.
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Numpad8' && !e.target.matches('input, textarea, [contenteditable="true"]')) {
+          e.preventDefault();
+          body.classList.toggle('rgb-overdrive');
+          if (typeof showToast === 'function') {
+            showToast(body.classList.contains('rgb-overdrive') ? 'RGB overdrive · on' : 'RGB overdrive · off');
+          }
+        }
+      });
+
+      // 01: Web Audio analyser. It remains dormant until the user actually plays audio.
+      let analyser = null;
+      let sourceNode = null;
+      let data = null;
+      let audioCtx = null;
+      let audioReady = false;
+
+      function initAnalyser() {
+        if (audioReady || !audioEl || !window.AudioContext && !window.webkitAudioContext) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new Ctx();
+          sourceNode = audioCtx.createMediaElementSource(audioEl);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          analyser.smoothingTimeConstant = .82;
+          sourceNode.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          data = new Uint8Array(analyser.frequencyBinCount);
+          audioReady = true;
+        } catch (err) {
+          // If a browser blocks MediaElementSource, keep the theme functional without analyser data.
+          analyser = null;
+        }
+      }
+
+      function avgRange(a, from, to) {
+        if (!a || !a.length) return 0;
+        let sum = 0;
+        let count = 0;
+        for (let i = from; i < Math.min(to, a.length); i++) { sum += a[i]; count++; }
+        return count ? sum / count / 255 : 0;
+      }
+
+      function audioFrame() {
+        if (analyser && data && !audioEl.paused) {
+          analyser.getByteFrequencyData(data);
+          const low = avgRange(data, 0, 8);
+          const mid = avgRange(data, 8, 24);
+          const high = avgRange(data, 24, 48);
+          const energy = Math.min(1, low * .5 + mid * .35 + high * .15);
+          document.documentElement.style.setProperty('--audio-low', low.toFixed(3));
+          document.documentElement.style.setProperty('--audio-mid', mid.toFixed(3));
+          document.documentElement.style.setProperty('--audio-high', high.toFixed(3));
+          document.documentElement.style.setProperty('--audio-energy', energy.toFixed(3));
+        } else if (audioEl.paused) {
+          document.documentElement.style.setProperty('--audio-low', '0');
+          document.documentElement.style.setProperty('--audio-mid', '0');
+          document.documentElement.style.setProperty('--audio-high', '0');
+          document.documentElement.style.setProperty('--audio-energy', '0');
+        }
+        if (!reduce) requestAnimationFrame(audioFrame);
+      }
+
+      if (audioEl) {
+        audioEl.addEventListener('play', () => {
+          initAnalyser();
+          if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        }, { passive: true });
+      }
+      if (!reduce) requestAnimationFrame(audioFrame);
+
+      // 08 + 10: deterministic-looking but genuinely random rare events.
+      function secretActive() { return body.classList.contains('theme-secret'); }
+      function fireInterference() {
+        if (!secretActive() || reduce || document.hidden) return;
+        body.classList.remove('signal-interference');
+        void body.offsetWidth;
+        body.classList.add('signal-interference');
+        window.setTimeout(() => body.classList.remove('signal-interference'), 420);
+      }
+      function fireRareGlitch() {
+        if (!secretActive() || reduce || document.hidden) return;
+        body.classList.remove('rare-glitch');
+        void body.offsetWidth;
+        body.classList.add('rare-glitch');
+        if (typeof showToast === 'function') showToast('SIGNAL ECHO // TRACE DETECTED');
+        window.setTimeout(() => body.classList.remove('rare-glitch'), 900);
+      }
+      function scheduleEvents() {
+        window.setTimeout(() => {
+          if (Math.random() < .72) fireInterference();
+          else fireRareGlitch();
+          scheduleEvents();
+        }, 18000 + Math.random() * 30000);
+      }
+      scheduleEvents();
+    })();
+
   </script>
 </body>
 </html>
