@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="theme-222.css" />
   <link rel="stylesheet" href="theme-noir.css" />
   <link rel="stylesheet" href="theme-capitano.css" />
+  <link rel="stylesheet" href="theme-alucard.css" />
   <link rel="stylesheet" href="theme-secret.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
@@ -37,9 +38,12 @@
   <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
   <div class="cursor-trail" id="cursorTrail" aria-hidden="true"></div>
 
-  <!-- Video Background -->
+  <!-- Video Background (dual layer for crossfade) -->
   <div class="video-bg" aria-hidden="true">
-    <video id="bgVideo" autoplay muted loop playsinline poster="photo.png">
+    <video id="bgVideo" class="bg-layer is-active" autoplay muted loop playsinline poster="photo.png">
+      <source src="" type="video/mp4" />
+    </video>
+    <video id="bgVideoB" class="bg-layer" muted loop playsinline poster="photo.png">
       <source src="" type="video/mp4" />
     </video>
   </div>
@@ -341,58 +345,54 @@
       }
     })();
 
-    /* ========== Hidden background shortcuts ========== */
+    /* ========== Hidden background shortcuts + crossfade ========== */
     (function () {
       const clips = {
         Numpad1: 'ssstik.io_@soul.blr_1779080280199.mp4',
         Numpad2: '222.mp4',
-        Numpad3: 'capitano.mp4'
+        Numpad3: 'capitano.mp4',
+        Numpad4: 'alucard.mp4'
       };
-      const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-secret'];
+      const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-alucard', 'theme-secret'];
       const isEditableTarget = (target) => target instanceof Element && target.matches('input, textarea, [contenteditable="true"]');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let switching = false;
 
-      function switchBackground(clip) {
-        const bg = document.getElementById('bgVideo');
-        const banner = document.getElementById('bannerVideo');
-        const audio = document.getElementById('audio');
-        const wasPlaying = audio && !audio.paused;
+      function fadeVolume(audio, to, ms) {
+        return new Promise((resolve) => {
+          if (!audio || reduceMotion || ms <= 0) {
+            if (audio) audio.volume = to;
+            resolve();
+            return;
+          }
+          const from = audio.volume;
+          const start = performance.now();
+          function tick(now) {
+            const t = Math.min(1, (now - start) / ms);
+            const eased = t * (2 - t);
+            audio.volume = from + (to - from) * eased;
+            if (t < 1) requestAnimationFrame(tick);
+            else resolve();
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      function applyThemeClasses(clip) {
         const isAlt = clip === '222.mp4';
         const isCapitano = clip === 'capitano.mp4';
-
-        window.__bgClip = clip;
-        window.__audioStartAt = isAlt ? 33 : 0;
+        const isAlucard = clip === 'alucard.mp4';
         document.body.classList.remove(...themeClasses);
         if (clip === 'ssstik.io_@soul.blr_1779080280199.mp4') document.body.classList.add('theme-noir');
         if (isAlt) document.body.classList.add('theme-alt');
         if (isCapitano) document.body.classList.add('theme-capitano');
+        if (isAlucard) document.body.classList.add('theme-alucard');
+      }
 
-        [bg, banner].forEach((video) => {
-          const source = video && video.querySelector('source');
-          if (source) source.src = clip;
-          if (video) { video.load(); video.play().catch(() => {}); }
-        });
-
-        const profileImage = clip === 'ssstik.io_@soul.blr_1779080280199.mp4'
-          ? 'photo.png'
-          : 'photo.png';
-        document.querySelectorAll('.enter-avatar img, .avatar img, .player-cover img').forEach((img) => {
-          img.src = profileImage;
-        });
-
-        if (audio) {
-          const source = audio.querySelector('source');
-          if (source) source.src = isAlt
-            ? 'bye-into-you-remix.mp3'
-            : (isCapitano ? 'Halsey-Gasoline(instrumental).mp3' : 'Insomnia slowed reverb.mp3');
-          audio.load();
-          if (wasPlaying) {
-            audio.addEventListener('canplay', () => {
-              if (window.__audioStartAt) audio.currentTime = window.__audioStartAt;
-              audio.play().catch(() => {});
-            }, { once: true });
-          }
-        }
-
+      function applyMeta(clip) {
+        const isAlt = clip === '222.mp4';
+        const isCapitano = clip === 'capitano.mp4';
+        const isAlucard = clip === 'alucard.mp4';
         const title = document.getElementById('playerTitle');
         const artist = document.getElementById('playerArtist');
         const duration = document.getElementById('duration');
@@ -404,6 +404,10 @@
           if (title) title.textContent = 'Gasoline';
           if (artist) artist.textContent = 'Halsey · instrumental';
           if (duration) duration.textContent = '0:00';
+        } else if (isAlucard) {
+          if (title) title.textContent = 'Sweater Weather';
+          if (artist) artist.textContent = 'The Neighbourhood';
+          if (duration) duration.textContent = '0:00';
         } else {
           if (title) title.textContent = 'Insomnia';
           if (artist) artist.textContent = 'slowed + reverb';
@@ -411,8 +415,124 @@
         }
       }
 
+      function getActiveBg() {
+        return document.querySelector('.video-bg .bg-layer.is-active') || document.getElementById('bgVideo');
+      }
+
+      function getInactiveBg() {
+        return document.querySelector('.video-bg .bg-layer:not(.is-active)') || document.getElementById('bgVideoB');
+      }
+
+      async function switchBackground(clip) {
+        if (switching) return;
+        if (window.__bgClip === clip) return;
+        switching = true;
+        document.body.classList.add('is-theme-fading');
+
+        const incoming = getInactiveBg();
+        const outgoing = getActiveBg();
+        const banner = document.getElementById('bannerVideo');
+        const audio = document.getElementById('audio');
+        const wasPlaying = audio && !audio.paused;
+        const isAlt = clip === '222.mp4';
+        const isCapitano = clip === 'capitano.mp4';
+        const isAlucard = clip === 'alucard.mp4';
+        const targetVol = audio ? (typeof audio.dataset.userVol !== 'undefined'
+          ? parseFloat(audio.dataset.userVol)
+          : (audio.volume || 0.7)) : 0.7;
+
+        window.__bgClip = clip;
+        window.__audioStartAt = isAlt ? 33 : (isAlucard ? 19 : 0);
+
+        // preload next video on inactive layer
+        if (incoming) {
+          const src = incoming.querySelector('source');
+          if (src) src.src = clip;
+          incoming.load();
+          try { await incoming.play(); } catch { /* autoplay policy */ }
+        }
+
+        // fade audio out while videos crossfade
+        const fadeMs = reduceMotion ? 0 : 700;
+        if (audio && wasPlaying) {
+          fadeVolume(audio, 0, fadeMs * 0.65);
+        }
+
+        // start crossfade after a short buffer so next frame is ready
+        await new Promise((r) => setTimeout(r, reduceMotion ? 0 : 120));
+
+        if (incoming) incoming.classList.add('is-active');
+        if (outgoing) outgoing.classList.remove('is-active');
+
+        // theme class mid-fade so CSS filters/overlays shift smoothly
+        applyThemeClasses(clip);
+        applyMeta(clip);
+
+        // banner soft swap
+        if (banner) {
+          if (!reduceMotion) banner.style.opacity = '0';
+          const bsrc = banner.querySelector('source');
+          if (bsrc) bsrc.src = clip;
+          banner.load();
+          banner.play().catch(() => {});
+          setTimeout(() => {
+            if (!reduceMotion) banner.style.opacity = '1';
+          }, reduceMotion ? 0 : 280);
+        }
+
+        document.querySelectorAll('.enter-avatar img, .avatar img, .player-cover img').forEach((img) => {
+          img.src = 'photo.png';
+        });
+
+        // wait for visual crossfade, then stop old video + swap audio
+        await new Promise((r) => setTimeout(r, fadeMs));
+
+        if (outgoing) {
+          try { outgoing.pause(); } catch { /* */ }
+        }
+
+        if (audio) {
+          const source = audio.querySelector('source');
+          if (source) {
+            source.src = isAlt
+              ? 'bye-into-you-remix.mp3'
+              : (isAlucard
+                ? 'The Neighbourhood - Sweater Weather.mp3'
+                : (isCapitano ? 'Halsey-Gasoline(instrumental).mp3' : 'Insomnia slowed reverb.mp3'));
+          }
+          audio.load();
+          const startPlay = () => {
+            if (window.__audioStartAt) audio.currentTime = window.__audioStartAt;
+            audio.volume = 0;
+            if (wasPlaying) {
+              audio.play().catch(() => {});
+              fadeVolume(audio, targetVol, reduceMotion ? 0 : 550);
+            } else {
+              audio.volume = targetVol;
+            }
+          };
+          if (audio.readyState >= 2) startPlay();
+          else audio.addEventListener('canplay', startPlay, { once: true });
+        }
+
+        document.body.classList.remove('is-theme-fading');
+        switching = false;
+        if (typeof showToast === 'function') {
+          const label = isAlt
+            ? 'theme · 222'
+            : (isCapitano
+              ? 'theme · capitano'
+              : (isAlucard ? 'theme · alucard' : 'theme · noir'));
+          showToast(label);
+        }
+      }
+
+      // expose for other features
+      window.__switchBackground = switchBackground;
+
       window.addEventListener('keydown', (event) => {
-        if (event.code === 'Numpad4' && !isEditableTarget(event.target)) {
+        // Numpad5 = secret terminal overlay (optional)
+        if (event.code === 'Numpad5' && !isEditableTarget(event.target)) {
           event.preventDefault();
           const isSecret = document.body.classList.toggle('theme-secret');
           if (typeof showToast === 'function') {
@@ -1069,6 +1189,7 @@
 
     // Init volume
     audio.volume = parseFloat(volSlider.value);
+    audio.dataset.userVol = String(audio.volume);
     updateVolIcon(audio.volume, audio.muted);
 
     function togglePlay() {
@@ -1118,6 +1239,7 @@
     volSlider.addEventListener('input', () => {
       const v = parseFloat(volSlider.value);
       audio.volume = v;
+      audio.dataset.userVol = String(v);
       if (v > 0 && audio.muted) {
         audio.muted = false;
       }
@@ -1406,8 +1528,9 @@
       function layout(animate) {
         const n = nodes.length || 1;
         const mobile = window.innerWidth < 640;
-        const step = mobile ? 88 : 124;
-        const jut = mobile ? 42 : 72;
+        const step = mobile ? 72 : 124;
+        const jut = mobile ? 28 : 72;
+        const rotAmt = mobile ? -48 : -64;
         stage.classList.toggle('is-dragging', dragging);
         nodes.forEach((el, i) => {
           let d = i - pos;
@@ -1416,15 +1539,15 @@
           const abs = Math.abs(d);
           const sign = abs < 0.001 ? 0 : (d < 0 ? -1 : 1);
           const x = d * step + sign * jut;
-          const rot = sign * -64;
-          const z = (1 - Math.min(abs, 1)) * 170 - abs * 18;
+          const rot = sign * rotAmt;
+          const z = (1 - Math.min(abs, 1)) * (mobile ? 120 : 170) - abs * 18;
           el.style.transition = (animate && !dragging && !reduceMotion)
-            ? 'transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease'
+            ? 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease'
             : (dragging || reduceMotion ? 'none' : '');
           el.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${rot}deg)`;
           el.style.zIndex = String(Math.round(120 - abs * 6));
-          el.style.opacity = abs > 6.2 ? '0' : String(Math.max(0.28, 1 - abs * 0.11));
-          el.style.visibility = abs > 7 ? 'hidden' : 'visible';
+          el.style.opacity = abs > (mobile ? 4.5 : 6.2) ? '0' : String(Math.max(0.28, 1 - abs * (mobile ? 0.14 : 0.11)));
+          el.style.visibility = abs > (mobile ? 5.2 : 7) ? 'hidden' : 'visible';
           el.classList.toggle('is-active', Math.round(pos) === i);
           el.classList.toggle('is-side', abs >= 0.45);
           el.tabIndex = Math.round(pos) === i ? 0 : -1;
@@ -1492,43 +1615,75 @@
         autoBtn.setAttribute('aria-pressed', autoSpin ? 'true' : 'false');
       }
 
+      let touchAxis = null; // 'x' | 'y' | null — lock axis after first move
+      let startY = 0;
+
       function onDown(e) {
         if (e.target.closest('.orbit-controls')) return;
         dragging = true;
-        lastX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+        touchAxis = null;
+        const pt = e.touches ? e.touches[0] : e;
+        lastX = pt.clientX ?? 0;
+        startY = pt.clientY ?? 0;
         dragAcc = 0;
         stage.classList.add('is-dragging');
       }
       function onMove(e) {
         if (!dragging) return;
-        const x = e.clientX ?? e.touches?.[0]?.clientX ?? lastX;
+        const pt = e.touches ? e.touches[0] : e;
+        const x = pt.clientX ?? lastX;
+        const y = pt.clientY ?? startY;
         const dx = x - lastX;
+        const dy = y - startY;
+
+        // on touch: decide horizontal vs vertical scroll
+        if (e.touches && touchAxis == null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+          touchAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (touchAxis === 'y') {
+            dragging = false;
+            stage.classList.remove('is-dragging');
+            return;
+          }
+        }
+        if (touchAxis === 'y') return;
+
+        if (e.touches && touchAxis === 'x' && e.cancelable) {
+          e.preventDefault();
+        }
+
         lastX = x;
         dragAcc += dx;
         const width = Math.max(window.innerWidth, 360);
-        pos -= dx / (width * 0.16);
+        const sens = window.innerWidth < 640 ? 0.12 : 0.16;
+        pos -= dx / (width * sens);
         pos = Math.max(-0.85, Math.min(pool.length - 0.15, pos));
         layout(false);
       }
       function onUp() {
-        if (!dragging) return;
+        if (!dragging) {
+          touchAxis = null;
+          return;
+        }
         dragging = false;
         stage.classList.remove('is-dragging');
-        if (Math.abs(dragAcc) < 8) {
-          pos = Math.round(pos);
+        const threshold = window.innerWidth < 640 ? 18 : 8;
+        if (Math.abs(dragAcc) >= threshold) {
+          pos = Math.round(pos + (dragAcc > 0 ? -0.15 : 0.15));
         } else {
           pos = Math.round(pos);
         }
         goTo(pos, true);
         bumpAuto();
+        touchAxis = null;
       }
 
       stage.addEventListener('mousedown', onDown);
       window.addEventListener('mousemove', onMove);
       window.addEventListener('mouseup', onUp);
       stage.addEventListener('touchstart', onDown, { passive: true });
-      window.addEventListener('touchmove', onMove, { passive: true });
+      window.addEventListener('touchmove', onMove, { passive: false });
       window.addEventListener('touchend', onUp, { passive: true });
+      window.addEventListener('touchcancel', onUp, { passive: true });
 
       window.addEventListener('keydown', (e) => {
         if (lightbox && !lightbox.hidden) {

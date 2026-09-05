@@ -1,0 +1,463 @@
+/* =========================================================
+   theme-alucard.css — Alucard · Hellsing night
+   body.theme-alucard
+   โทน: blood crimson × void black · gothic · elegant violence
+   ========================================================= */
+
+body.theme-alucard {
+  --ink: #f3ebe8;
+  --panel: rgba(12, 6, 8, 0.68);
+  --line: rgba(200, 45, 55, 0.26);
+  --soft: rgba(160, 20, 35, 0.12);
+  --muted: rgba(220, 185, 185, 0.58);
+  --glow: rgba(200, 30, 45, 0.28);
+  --listen: #e04550;
+  --listen-bg: rgba(180, 25, 40, 0.16);
+  --listen-border: rgba(210, 50, 65, 0.42);
+  --progress: linear-gradient(90deg, #5a1018, #c03040, #f0a8a8);
+  --accent-deep: #4a0c14;
+  --steel: rgba(120, 100, 105, 0.16);
+  background: #050203;
+}
+
+/* ---------- Video treatment ---------- */
+body.theme-alucard .video-bg video,
+body.theme-alucard .video-bg .bg-layer {
+  filter:
+    brightness(0.44)
+    contrast(1.22)
+    saturate(0.72)
+    hue-rotate(-4deg);
+}
+
+body.theme-alucard .banner video {
+  filter: brightness(0.68) contrast(1.12) saturate(0.8);
+  object-position: center 30%;
+}
+
+body.theme-alucard .video-overlay {
+  background:
+    /* cold ash top */
+    radial-gradient(ellipse 85% 60% at 18% 12%, rgba(80, 50, 55, 0.1) 0%, transparent 55%),
+    /* blood bloom center */
+    radial-gradient(ellipse 70% 50% at 52% 35%, rgba(160, 18, 32, 0.18) 0%, transparent 58%),
+    /* void weight */
+    linear-gradient(175deg,
+      rgba(4, 1, 2, 0.8) 0%,
+      rgba(10, 3, 5, 0.28) 40%,
+      rgba(3, 0, 1, 0.92) 100%
+    ),
+    radial-gradient(ellipse at 50% 100%, rgba(2, 0, 1, 0.65) 0%, transparent 48%);
+}
+
+body.theme-alucard .video-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 160px rgba(2, 0, 1, 0.82),
+    inset 0 0 50px rgba(140, 15, 28, 0.08),
+    inset 0 -48px 90px rgba(0, 0, 0, 0.42);
+}
+
+body.theme-alucard .noise {
+  opacity: 0.09;
+  mix-blend-mode: soft-light;
+}
+
+/* subtle blood-mist particles feel via extra grain */
+body.theme-alucard .noise::after {
+  content: none;
+}
+
+/* ---------- Scroll progress ---------- */
+body.theme-alucard .scroll-progress {
+  background: linear-gradient(90deg,
+    rgba(120, 18, 28, 0.75),
+    rgba(210, 55, 65, 0.95),
+    rgba(240, 170, 170, 0.9)
+  );
+  box-shadow: 0 0 18px rgba(180, 25, 40, 0.45);
+  height: 2px;
+}
+
+/* ---------- Enter gate ---------- */
+body.theme-alucard .enter-inner::before {
+  background: radial-gradient(
+    circle,
+    rgba(180, 25, 40, 0.22) 0%,
+    rgba(90, 10, 18, 0.07) 40%,
+    transparent 70%
+  );
+}
+
+body.theme-alucard .enter-name {
+  color: #f5ecec;
+  letter-spacing: 0.06em;
+  text-shadow:
+    0 2px 30px rgba(0, 0, 0, 0.6),
+    0 0 48px rgba(180, 25, 40, 0.32),
+    0 0 2px rgba(255, 200, 200, 0.12);
+}
+
+body.theme-alucard .enter-gate:hover .enter-name {
+  text-shadow:
+    0 2px 34px rgba(0, 0, 0, 0.6),
+    0 0 64px rgba(200, 35, 50, 0.42);
+}
+
+body.theme-alucard .enter-hint {
+  color: rgba(220, 170, 175, 0.48);
+}
+
+body.theme-alucard .enter-gate:hover .enter-hint {
+  color: rgba(240, 195, 195, 0.72);
+}
+
+body.theme-alucard .enter-pulse {
+  background: rgba(210, 50, 60, 0.8);
+  box-shadow: 0 0 0 0 rgba(180, 30, 45, 0.45);
+}
+
+body.theme-alucard .enter-avatar {
+  border-color: rgba(230, 150, 155, 0.78);
+  box-shadow:
+    0 14px 48px rgba(0, 0, 0, 0.65),
+    0 0 0 7px rgba(140, 15, 28, 0.1),
+    0 0 52px rgba(180, 25, 40, 0.22);
+  animation: alucardGlow 5.2s ease-in-out infinite;
+}
+
+body.theme-alucard .enter-avatar::after {
+  background: linear-gradient(
+    135deg,
+    rgba(240, 180, 185, 0.3) 0%,
+    transparent 38%,
+    transparent 62%,
+    rgba(180, 25, 40, 0.28) 100%
+  ) border-box;
+}
+
+/* ---------- Profile card ---------- */
+body.theme-alucard .profile {
+  border-color: rgba(180, 40, 55, 0.28);
+  background: linear-gradient(
+    165deg,
+    rgba(16, 8, 10, 0.74) 0%,
+    rgba(8, 3, 5, 0.64) 100%
+  );
+  box-shadow:
+    0 32px 88px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(140, 20, 32, 0.08) inset,
+    0 0 64px rgba(120, 15, 28, 0.12);
+  backdrop-filter: blur(30px) saturate(1.1);
+  -webkit-backdrop-filter: blur(30px) saturate(1.1);
+}
+
+body.theme-alucard .profile:hover {
+  border-color: rgba(200, 50, 65, 0.36);
+  box-shadow:
+    0 38px 96px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(160, 25, 40, 0.12) inset,
+    0 0 76px rgba(140, 20, 35, 0.14);
+}
+
+body.theme-alucard .banner::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 25%,
+    rgba(10, 3, 5, 0.4) 65%,
+    rgba(5, 1, 2, 0.82) 100%
+  );
+}
+
+body.theme-alucard .views-badge {
+  background: rgba(6, 2, 3, 0.6);
+  border-color: rgba(180, 40, 55, 0.28);
+  color: rgba(240, 190, 190, 0.9);
+}
+
+body.theme-alucard .avatar {
+  border-color: rgba(235, 160, 165, 0.92);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.55),
+    0 0 32px rgba(180, 25, 40, 0.2);
+  animation: alucardGlow 5.2s ease-in-out infinite;
+}
+
+body.theme-alucard .name-scatter .letter.is-active {
+  color: #ffe6e6;
+  text-shadow: 0 0 22px rgba(210, 50, 65, 0.55);
+}
+
+body.theme-alucard .status-pill {
+  background: rgba(140, 20, 32, 0.12);
+  border-color: rgba(170, 35, 50, 0.22);
+  color: rgba(230, 185, 185, 0.75);
+}
+
+body.theme-alucard .status-pill.listening {
+  background: var(--listen-bg);
+  border-color: var(--listen-border);
+  color: var(--listen);
+  box-shadow: 0 0 26px rgba(180, 25, 40, 0.22);
+}
+
+body.theme-alucard .greeting {
+  color: rgba(190, 140, 145, 0.42);
+}
+
+body.theme-alucard .tagline {
+  color: var(--muted);
+}
+
+body.theme-alucard .bio {
+  color: rgba(235, 200, 200, 0.8);
+}
+
+body.theme-alucard .bio::first-line {
+  color: rgba(250, 220, 220, 0.94);
+}
+
+body.theme-alucard .bio-sparkles i {
+  background: rgba(210, 90, 100, 0.55);
+  box-shadow: 0 0 6px rgba(180, 25, 40, 0.35);
+}
+
+/* Socials */
+body.theme-alucard .socials a,
+body.theme-alucard .share-btn {
+  background: rgba(140, 20, 32, 0.12);
+  border-color: rgba(170, 35, 50, 0.24);
+}
+
+body.theme-alucard .socials a:hover,
+body.theme-alucard .share-btn:hover {
+  background: rgba(170, 30, 45, 0.26);
+  border-color: rgba(220, 70, 85, 0.5);
+  box-shadow: 0 4px 20px rgba(120, 15, 28, 0.28);
+}
+
+/* ---------- Music player ---------- */
+body.theme-alucard .player {
+  border-color: rgba(170, 35, 50, 0.26);
+  background: linear-gradient(
+    135deg,
+    rgba(14, 5, 7, 0.62) 0%,
+    rgba(8, 2, 4, 0.55) 100%
+  );
+}
+
+body.theme-alucard .player:has(.viz.active) {
+  border-color: rgba(200, 50, 65, 0.36);
+  box-shadow: 0 0 40px rgba(140, 20, 35, 0.14);
+}
+
+body.theme-alucard .ctrl-btn {
+  background: rgba(150, 25, 40, 0.14);
+}
+
+body.theme-alucard .ctrl-btn:hover {
+  background: rgba(170, 35, 50, 0.28);
+}
+
+body.theme-alucard .ctrl-btn.play-btn {
+  background: rgba(170, 30, 45, 0.28);
+}
+
+body.theme-alucard .ctrl-btn.play-btn:hover {
+  background: rgba(200, 45, 60, 0.42);
+}
+
+body.theme-alucard .progress {
+  background: rgba(160, 30, 45, 0.16);
+}
+
+body.theme-alucard .progress-bar {
+  background: var(--progress);
+  box-shadow: 0 0 12px rgba(200, 40, 55, 0.4);
+}
+
+body.theme-alucard .viz span {
+  background: rgba(220, 90, 100, 0.88);
+}
+
+body.theme-alucard .player-title {
+  color: #f5ecec;
+}
+
+body.theme-alucard .player-artist {
+  color: rgba(210, 155, 160, 0.55);
+}
+
+body.theme-alucard .time {
+  color: rgba(190, 140, 145, 0.5);
+}
+
+body.theme-alucard .lyrics-snippet {
+  color: rgba(200, 145, 150, 0.52);
+}
+
+/* ---------- Works / Coverflow ---------- */
+body.theme-alucard .works-header h2 {
+  color: #f3ebe8;
+}
+
+body.theme-alucard .works-header p {
+  color: rgba(190, 140, 145, 0.5);
+}
+
+body.theme-alucard .works-header h2::after {
+  background: linear-gradient(90deg, rgba(180, 30, 45, 0.8), transparent);
+}
+
+body.theme-alucard .orbit-filter.is-active {
+  background: rgba(160, 25, 40, 0.24);
+  border-color: rgba(210, 55, 70, 0.48);
+  box-shadow: 0 4px 20px rgba(120, 15, 28, 0.24);
+}
+
+body.theme-alucard .cf-cover.is-active .cf-face {
+  border-color: rgba(230, 110, 120, 0.78);
+  box-shadow:
+    0 28px 72px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(160, 25, 40, 0.14) inset,
+    0 0 52px rgba(160, 20, 35, 0.22);
+}
+
+body.theme-alucard .orbit-nav.is-on,
+body.theme-alucard .orbit-nav.orbit-auto.is-on {
+  border-color: rgba(200, 50, 65, 0.48);
+  background: rgba(160, 25, 40, 0.2);
+}
+
+body.theme-alucard .orbit-tag[data-type="video"] {
+  color: rgba(235, 140, 145, 0.92);
+  border-color: rgba(180, 40, 55, 0.32);
+  background: rgba(150, 20, 35, 0.14);
+}
+
+body.theme-alucard .cf-stage::before {
+  background: radial-gradient(circle, rgba(180, 25, 40, 0.16) 0%, transparent 70%);
+}
+
+/* ---------- Toast / Footer ---------- */
+body.theme-alucard .toast {
+  border-color: rgba(170, 35, 50, 0.28);
+  background: rgba(8, 2, 4, 0.96);
+  color: rgba(240, 200, 200, 0.94);
+}
+
+body.theme-alucard .site-footer {
+  color: rgba(170, 115, 120, 0.34);
+}
+
+body.theme-alucard .site-footer:hover {
+  color: rgba(200, 145, 150, 0.52);
+}
+
+/* ---------- Share modal ---------- */
+body.theme-alucard .share-modal-panel {
+  background: rgba(10, 3, 5, 0.96);
+  border-color: rgba(170, 35, 50, 0.24);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(140, 20, 32, 0.08);
+}
+
+body.theme-alucard .share-action.primary {
+  background: rgba(160, 25, 40, 0.26);
+  border-color: rgba(210, 55, 70, 0.4);
+}
+
+body.theme-alucard .share-action.primary:hover {
+  background: rgba(190, 40, 55, 0.36);
+}
+
+/* ---------- Cursor ---------- */
+body.theme-alucard .cursor-glow {
+  background: radial-gradient(circle, rgba(200, 40, 55, 0.28) 0%, transparent 70%);
+}
+
+body.theme-alucard .trail-dot {
+  background: rgba(220, 90, 100, 0.55);
+  box-shadow: 0 0 8px rgba(180, 25, 40, 0.35);
+}
+
+body.theme-alucard .cursor {
+  background: rgba(245, 200, 200, 0.92);
+}
+
+body.theme-alucard.cursor-hover .cursor {
+  background: rgba(220, 80, 95, 0.45);
+  border-color: rgba(240, 160, 165, 0.75);
+}
+
+/* ---------- Selection / Scrollbar / Focus ---------- */
+body.theme-alucard ::selection {
+  background: rgba(170, 30, 45, 0.45);
+  color: #fff;
+}
+
+body.theme-alucard {
+  scrollbar-color: rgba(170, 35, 50, 0.4) transparent;
+}
+
+body.theme-alucard ::-webkit-scrollbar-thumb {
+  background: rgba(160, 30, 45, 0.34);
+  background-clip: padding-box;
+}
+
+body.theme-alucard ::-webkit-scrollbar-thumb:hover {
+  background: rgba(190, 45, 60, 0.5);
+  background-clip: padding-box;
+}
+
+body.theme-alucard :focus-visible {
+  outline-color: rgba(220, 90, 100, 0.6);
+}
+
+/* ---------- Particles ---------- */
+body.theme-alucard .particle {
+  background: rgba(210, 90, 100, 0.38);
+  box-shadow: 0 0 7px rgba(180, 25, 40, 0.2);
+}
+
+/* ---------- Status dot ---------- */
+body.theme-alucard .status-dot {
+  background: var(--listen);
+  box-shadow: 0 0 0 0 rgba(200, 40, 55, 0.45);
+}
+
+body.theme-alucard .status-pill.listening .status-dot {
+  animation: pulseDotAlucard 1.35s ease-in-out infinite;
+}
+
+/* ---------- Animations ---------- */
+@keyframes alucardGlow {
+  0%, 100% {
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.55),
+      0 0 0 0 rgba(180, 25, 40, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 12px 36px rgba(0, 0, 0, 0.6),
+      0 0 0 8px rgba(180, 25, 40, 0.16),
+      0 0 42px rgba(160, 20, 35, 0.18);
+  }
+}
+
+@keyframes pulseDotAlucard {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 40, 55, 0.5); }
+  50% { box-shadow: 0 0 0 7px rgba(200, 40, 55, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.theme-alucard .enter-avatar,
+  body.theme-alucard .avatar {
+    animation: none !important;
+  }
+  body.theme-alucard .status-pill.listening .status-dot {
+    animation: none !important;
+  }
+}
