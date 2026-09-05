@@ -69,6 +69,33 @@
     <p class="lightbox-count" id="lightboxCount"></p>
   </div>
 
+  <!-- Share Card Modal -->
+  <div class="share-modal" id="shareModal" role="dialog" aria-modal="true" aria-label="Share card" hidden>
+    <div class="share-modal-backdrop" id="shareModalBackdrop"></div>
+    <div class="share-modal-panel">
+      <button type="button" class="share-modal-close" id="shareModalClose" aria-label="ปิด">&times;</button>
+      <h3 class="share-modal-title">Share Card</h3>
+      <p class="share-modal-sub">preview · download · copy</p>
+      <div class="share-card-preview">
+        <canvas id="shareCanvas" width="720" height="900" aria-label="Share preview"></canvas>
+      </div>
+      <div class="share-modal-actions">
+        <button type="button" class="share-action primary" id="shareDownload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
+        <button type="button" class="share-action" id="shareCopyImg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy image
+        </button>
+        <button type="button" class="share-action" id="shareCopyLink">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Copy link
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ========== HERO / PROFILE ========== -->
   <section class="hero">
     <article class="profile" aria-label="Profile card">
@@ -134,7 +161,7 @@
               <path d="M11.979 0C5.678 0 .511 4.86.022 11.19l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.962 20.607 6.53 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0zM7.544 18.21l-1.473-.608c.268.789.979 1.357 1.849 1.357 1.061 0 1.923-.865 1.923-1.923 0-.849-.583-1.563-1.369-1.799l1.523.628c.831.343 1.246 1.295.902 2.126-.343.831-1.294 1.247-2.125.902-.03-.012-.06-.027-.09-.042.0.0.0.0.0.0zm9.491-7.453c-1.666 0-3.018-1.352-3.018-3.019 0-1.666 1.352-3.018 3.018-3.018 1.667 0 3.019 1.352 3.019 3.018 0 1.667-1.352 3.019-3.019 3.019zm0-5.009c-1.1 0-1.99.889-1.99 1.99 0 1.1.89 1.991 1.99 1.991s1.991-.891 1.991-1.991c0-1.101-.891-1.99-1.991-1.99z"/>
             </svg>
           </a>
-          <button class="share-btn" id="shareBtn" aria-label="Copy link" title="คัดลอกลิงก์" data-toast="คัดลอกลิงก์แล้ว">
+          <button class="share-btn" id="shareBtn" aria-label="Share card" title="Share card" data-toast="Share card">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
               <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
@@ -520,30 +547,321 @@
       });
     });
 
-    /* ========== Share / Copy link ========== */
-    const shareBtn = document.getElementById('shareBtn');
-    shareBtn.addEventListener('click', async () => {
-      const url = window.location.href;
-      try {
-        await navigator.clipboard.writeText(url);
-        showToast('คัดลอกลิงก์แล้ว ✓');
-      } catch {
-        // fallback
-        const ta = document.createElement('textarea');
-        ta.value = url;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
+    /* ========== Share Card (canvas preview) ========== */
+    (function () {
+      const shareBtn = document.getElementById('shareBtn');
+      const modal = document.getElementById('shareModal');
+      const canvas = document.getElementById('shareCanvas');
+      const closeBtn = document.getElementById('shareModalClose');
+      const backdrop = document.getElementById('shareModalBackdrop');
+      const downloadBtn = document.getElementById('shareDownload');
+      const copyImgBtn = document.getElementById('shareCopyImg');
+      const copyLinkBtn = document.getElementById('shareCopyLink');
+      if (!shareBtn || !modal || !canvas) return;
+
+      const W = 720;
+      const H = 900;
+      let lastBlob = null;
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          // same-origin: skip crossOrigin to avoid CORS taint on canvas
+          try {
+            const u = new URL(src, window.location.href);
+            if (u.origin !== window.location.origin) img.crossOrigin = 'anonymous';
+          } catch { /* relative path ok */ }
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      }
+
+      async function getAvatarImage() {
+        // prefer already-loaded DOM image (avoids reload / CORS issues)
+        const el = document.querySelector('.avatar img')
+          || document.querySelector('.player-cover img')
+          || document.querySelector('.enter-avatar img');
+        if (el && el.complete && el.naturalWidth > 0) {
+          return el;
+        }
+        const src = (el && el.src) || 'photo.png';
+        return loadImage(src);
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
+
+      function drawCover(ctx, img, x, y, size) {
+        const iw = img.naturalWidth || img.width;
+        const ih = img.naturalHeight || img.height;
+        if (!iw || !ih) return;
+        const s = Math.min(iw, ih);
+        const sx = (iw - s) / 2;
+        const sy = (ih - s) / 2;
+        ctx.drawImage(img, sx, sy, s, s, x, y, size, size);
+      }
+
+      async function renderShareCard() {
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const name = (document.getElementById('nameScatter')?.getAttribute('aria-label')
+          || document.querySelector('.name-scatter')?.textContent
+          || 'talos blackagency').trim();
+        const songTitle = document.getElementById('playerTitle')?.textContent?.trim() || 'Insomnia';
+        const songArtist = document.getElementById('playerArtist')?.textContent?.trim() || 'slowed + reverb';
+        const statusText = document.getElementById('statusText')?.textContent?.trim() || 'online · quiet';
+        const urlHost = (() => {
+          try { return new URL(window.location.href).host || 'profile'; }
+          catch { return 'profile'; }
+        })();
+
+        let avatarImg = null;
+        try { avatarImg = await getAvatarImage(); } catch { avatarImg = null; }
+
+        // soft dark gradient background
+        const bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, '#0c0c0e');
+        bg.addColorStop(0.45, '#121214');
+        bg.addColorStop(1, '#0a0a0b');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // subtle radial glow
+        const glow = ctx.createRadialGradient(W * 0.5, H * 0.28, 20, W * 0.5, H * 0.28, 320);
+        glow.addColorStop(0, 'rgba(255,255,255,0.08)');
+        glow.addColorStop(0.55, 'rgba(255,255,255,0.02)');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, W, H);
+
+        // noise-like soft vignette
+        const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.2, W / 2, H / 2, H * 0.75);
+        vig.addColorStop(0, 'transparent');
+        vig.addColorStop(1, 'rgba(0,0,0,0.45)');
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, W, H);
+
+        // card panel
+        const pad = 48;
+        const cardX = pad;
+        const cardY = 72;
+        const cardW = W - pad * 2;
+        const cardH = H - 160;
+        ctx.save();
+        roundRect(ctx, cardX, cardY, cardW, cardH, 28);
+        ctx.fillStyle = 'rgba(22,22,24,0.72)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+
+        // avatar
+        const avSize = 168;
+        const avX = (W - avSize) / 2;
+        const avY = cardY + 56;
+        if (avatarImg) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          drawCover(ctx, avatarImg, avX, avY, avSize);
+          ctx.restore();
+        } else {
+          ctx.fillStyle = 'rgba(255,255,255,0.12)';
+          ctx.beginPath();
+          ctx.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // avatar ring
+        ctx.beginPath();
+        ctx.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2 + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(avX + avSize / 2, avY + avSize / 2, avSize / 2 + 10, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // name
+        ctx.fillStyle = '#f5f5f3';
+        ctx.font = '700 36px Manrope, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(name, W / 2, avY + avSize + 52);
+
+        // status pill
+        const statusY = avY + avSize + 96;
+        ctx.font = '500 16px Manrope, system-ui, sans-serif';
+        const statusW = Math.min(ctx.measureText(statusText).width + 44, cardW - 80);
+        const statusX = (W - statusW) / 2;
+        roundRect(ctx, statusX, statusY - 16, statusW, 32, 16);
+        ctx.fillStyle = 'rgba(255,255,255,0.08)';
+        ctx.fill();
+        ctx.fillStyle = 'rgba(109,206,138,0.95)';
+        ctx.beginPath();
+        ctx.arc(statusX + 18, statusY, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(245,245,243,0.78)';
+        ctx.fillText(statusText, W / 2 + 6, statusY);
+
+        // now playing block
+        const npY = statusY + 56;
+        const npH = 110;
+        const npX = cardX + 36;
+        const npW = cardW - 72;
+        roundRect(ctx, npX, npY, npW, npH, 18);
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // mini cover
+        const mini = 64;
+        const miniX = npX + 20;
+        const miniY = npY + (npH - mini) / 2;
+        if (avatarImg) {
+          ctx.save();
+          roundRect(ctx, miniX, miniY, mini, mini, 12);
+          ctx.clip();
+          drawCover(ctx, avatarImg, miniX, miniY, mini);
+          ctx.restore();
+        } else {
+          ctx.fillStyle = 'rgba(255,255,255,0.1)';
+          roundRect(ctx, miniX, miniY, mini, mini, 12);
+          ctx.fill();
+        }
+        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+        ctx.lineWidth = 1;
+        roundRect(ctx, miniX, miniY, mini, mini, 12);
+        ctx.stroke();
+
+        // song text
+        ctx.textAlign = 'left';
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.font = '500 12px DM Mono, monospace';
+        ctx.fillText('NOW PLAYING', miniX + mini + 18, npY + 34);
+        ctx.fillStyle = '#f5f5f3';
+        ctx.font = '600 22px Manrope, system-ui, sans-serif';
+        const titleMax = npW - mini - 50;
+        let title = songTitle;
+        if (ctx.measureText(title).width > titleMax) {
+          while (title.length > 3 && ctx.measureText(title + '…').width > titleMax) title = title.slice(0, -1);
+          title += '…';
+        }
+        ctx.fillText(title, miniX + mini + 18, npY + 60);
+        ctx.fillStyle = 'rgba(245,245,243,0.55)';
+        ctx.font = '500 15px Manrope, system-ui, sans-serif';
+        ctx.fillText(songArtist, miniX + mini + 18, npY + 84);
+
+        // footer
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(255,255,255,0.28)';
+        ctx.font = '500 13px DM Mono, monospace';
+        ctx.fillText(urlHost + '  ·  soft nights only', W / 2, cardY + cardH + 36);
+
+        // export blob for copy/download
+        return new Promise((resolve) => {
+          canvas.toBlob((blob) => {
+            lastBlob = blob;
+            resolve(blob);
+          }, 'image/png');
+        });
+      }
+
+      function openModal() {
+        modal.hidden = false;
+        document.body.classList.add('share-open');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => modal.classList.add('open'));
+        renderShareCard().catch(() => showToast('สร้างการ์ดไม่สำเร็จ'));
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+        document.body.classList.remove('share-open');
+        document.body.style.overflow = '';
+        setTimeout(() => { modal.hidden = true; }, 350);
+      }
+
+      shareBtn.addEventListener('click', openModal);
+      closeBtn?.addEventListener('click', closeModal);
+      backdrop?.addEventListener('click', closeModal);
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+      });
+
+      downloadBtn?.addEventListener('click', async () => {
         try {
-          document.execCommand('copy');
+          if (!lastBlob) await renderShareCard();
+          if (!lastBlob) throw new Error('no blob');
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(lastBlob);
+          a.download = 'talos-share-card.png';
+          a.click();
+          URL.revokeObjectURL(a.href);
+          showToast('ดาวน์โหลดแล้ว ✓');
+        } catch {
+          showToast('ดาวน์โหลดไม่สำเร็จ');
+        }
+      });
+
+      copyImgBtn?.addEventListener('click', async () => {
+        try {
+          if (!lastBlob) await renderShareCard();
+          if (!lastBlob) throw new Error('no blob');
+          if (navigator.clipboard && window.ClipboardItem) {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': lastBlob })
+            ]);
+            showToast('คัดลอกรูปแล้ว ✓');
+          } else {
+            throw new Error('clipboard image unsupported');
+          }
+        } catch {
+          showToast('คัดลอกรูปไม่สำเร็จ · ลอง Download');
+        }
+      });
+
+      copyLinkBtn?.addEventListener('click', async () => {
+        const url = window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
           showToast('คัดลอกลิงก์แล้ว ✓');
         } catch {
-          showToast('คัดลอกไม่สำเร็จ');
+          const ta = document.createElement('textarea');
+          ta.value = url;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            showToast('คัดลอกลิงก์แล้ว ✓');
+          } catch {
+            showToast('คัดลอกไม่สำเร็จ');
+          }
+          document.body.removeChild(ta);
         }
-        document.body.removeChild(ta);
-      }
-    });
+      });
+    })();
 
     /* ========== Typing effect (tagline) ========== */
     const typedEl = document.querySelector('.typed');
