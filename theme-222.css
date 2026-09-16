@@ -1,453 +1,145 @@
 /* =========================================================
-   theme-222.css — โทนพื้นหลัง 222.mp4
-   body.theme-alt
-   โทน: blush pink × soft violet · warm night · intimate glow
+   theme-alt — 222.mp4
+   silver hair · ice blade · blood petals · cold moonlight
    ========================================================= */
-
 body.theme-alt {
-  --ink: #fff0f5;
-  --panel: rgba(28, 12, 22, 0.6);
-  --line: rgba(255, 150, 195, 0.2);
-  --soft: rgba(255, 130, 175, 0.1);
-  --muted: rgba(255, 210, 230, 0.6);
-  --glow: rgba(255, 110, 175, 0.24);
-  --listen: #ff8ec8;
-  --listen-bg: rgba(255, 110, 175, 0.14);
-  --listen-border: rgba(255, 140, 190, 0.38);
-  --progress: linear-gradient(90deg, #ff7ab8, #ffb8d8, #fff0f6);
-  --accent-deep: #8a2a55;
-  --steel: rgba(200, 140, 180, 0.14);
-  background: #10060c;
+  --ink: #eef2f8;
+  --muted: rgba(180, 200, 230, 0.5);
+  --panel: rgba(8, 12, 20, 0.76);
+  --panel-solid: rgba(10, 14, 22, 0.94);
+  --line: rgba(140, 180, 230, 0.18);
+  --glow: rgba(120, 170, 255, 0.28);
+  --listen: #7aabf0;
+  --listen-bg: rgba(100, 160, 240, 0.12);
+  --listen-border: rgba(120, 170, 240, 0.35);
+  --progress: linear-gradient(90deg, #1a3050, #5a90d0, #d0e4ff);
+  --accent: #6a9eef;
+  /* secondary blood accent used sparingly */
+  --blood: #d04050;
+  background: #060910;
 }
 
-/* ---------- Video treatment ---------- */
 body.theme-alt .video-bg video {
-  filter:
-    brightness(0.5)
-    contrast(1.1)
-    saturate(1.18)
-    hue-rotate(-10deg);
+  filter: brightness(0.48) contrast(1.12) saturate(0.92) hue-rotate(-6deg);
 }
-
 body.theme-alt .banner video {
-  filter: brightness(0.72) contrast(1.06) saturate(1.1);
+  filter: brightness(0.75) contrast(1.08) saturate(1.0);
 }
-
 body.theme-alt .video-overlay {
   background:
-    radial-gradient(ellipse 90% 70% at 15% 20%, rgba(255, 90, 150, 0.1) 0%, transparent 52%),
-    radial-gradient(ellipse 70% 55% at 70% 25%, rgba(200, 100, 255, 0.08) 0%, transparent 55%),
-    linear-gradient(165deg,
-      rgba(36, 6, 22, 0.8) 0%,
-      rgba(22, 4, 16, 0.36) 42%,
-      rgba(14, 3, 12, 0.86) 100%
-    ),
-    radial-gradient(ellipse at 50% 100%, rgba(10, 2, 8, 0.55) 0%, transparent 48%);
+    radial-gradient(ellipse 90% 55% at 70% 15%, rgba(80, 120, 200, 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 20% 60%, rgba(140, 30, 45, 0.1) 0%, transparent 50%),
+    linear-gradient(180deg,
+      rgba(6, 9, 16, 0.5) 0%,
+      rgba(6, 9, 16, 0.1) 30%,
+      rgba(6, 9, 16, 0.5) 65%,
+      rgba(4, 6, 12, 0.96) 100%);
 }
-
 body.theme-alt .video-overlay::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
   box-shadow:
-    inset 0 0 170px rgba(10, 2, 8, 0.62),
-    inset 0 0 55px rgba(255, 90, 150, 0.06),
-    inset 0 -36px 72px rgba(0, 0, 0, 0.28);
+    inset 0 0 130px rgba(2, 4, 10, 0.65),
+    inset 0 -50px 90px rgba(0, 0, 0, 0.35);
 }
+body.theme-alt .noise { opacity: 0.04; }
 
-body.theme-alt .noise {
-  opacity: 0.058;
-  mix-blend-mode: soft-light;
-}
-
-/* ---------- Scroll progress ---------- */
 body.theme-alt .scroll-progress {
-  background: linear-gradient(90deg,
-    rgba(255, 120, 180, 0.6),
-    rgba(255, 190, 220, 0.95),
-    rgba(255, 230, 245, 0.9)
-  );
-  box-shadow: 0 0 16px rgba(255, 110, 175, 0.38);
-  height: 2px;
+  background: linear-gradient(90deg, transparent, #6a9eef, #e0ecff);
+  box-shadow: 0 0 20px rgba(100, 160, 240, 0.35);
 }
 
-/* ---------- Enter gate ---------- */
+body.theme-alt .enter-inner {
+  border-color: rgba(140, 180, 230, 0.16);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5), inset 0 1px 0 rgba(160, 200, 255, 0.1);
+}
 body.theme-alt .enter-inner::before {
-  background: radial-gradient(
-    circle,
-    rgba(255, 110, 175, 0.18) 0%,
-    rgba(255, 70, 140, 0.06) 40%,
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(100, 150, 240, 0.16) 0%, transparent 62%);
 }
-
 body.theme-alt .enter-name {
-  color: #fff0f5;
-  text-shadow:
-    0 2px 28px rgba(0, 0, 0, 0.45),
-    0 0 40px rgba(255, 110, 175, 0.28),
-    0 0 2px rgba(255, 210, 230, 0.15);
+  text-shadow: 0 4px 40px rgba(0,0,0,0.55), 0 0 50px rgba(100, 160, 255, 0.25);
 }
-
-body.theme-alt .enter-gate:hover .enter-name {
-  text-shadow:
-    0 2px 32px rgba(0, 0, 0, 0.45),
-    0 0 58px rgba(255, 120, 185, 0.4);
-}
-
-body.theme-alt .enter-hint {
-  color: rgba(255, 190, 215, 0.5);
-}
-
-body.theme-alt .enter-gate:hover .enter-hint {
-  color: rgba(255, 210, 230, 0.72);
-}
-
-body.theme-alt .enter-pulse {
-  background: rgba(255, 140, 190, 0.75);
-  box-shadow: 0 0 0 0 rgba(255, 110, 175, 0.45);
-}
-
-body.theme-alt .enter-avatar {
-  border-color: rgba(255, 200, 225, 0.88);
-  box-shadow:
-    0 14px 44px rgba(0, 0, 0, 0.52),
-    0 0 0 7px rgba(255, 110, 175, 0.07),
-    0 0 48px rgba(255, 110, 175, 0.18);
-  animation: altGlow 4.8s ease-in-out infinite;
-}
-
-body.theme-alt .enter-avatar::after {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 220, 235, 0.34) 0%,
-    transparent 38%,
-    transparent 62%,
-    rgba(255, 110, 175, 0.24) 100%
-  ) border-box;
-}
-
-/* ---------- Profile card ---------- */
-body.theme-alt .profile {
-  border-color: rgba(255, 150, 195, 0.22);
-  background: linear-gradient(
-    165deg,
-    rgba(32, 12, 24, 0.68) 0%,
-    rgba(20, 8, 16, 0.58) 100%
-  );
-  box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 130, 180, 0.07) inset,
-    0 0 56px rgba(255, 80, 150, 0.08);
-  backdrop-filter: blur(28px) saturate(1.15);
-  -webkit-backdrop-filter: blur(28px) saturate(1.15);
-}
-
-body.theme-alt .profile:hover {
-  border-color: rgba(255, 160, 205, 0.3);
-  box-shadow:
-    0 36px 90px rgba(0, 0, 0, 0.58),
-    0 0 0 1px rgba(255, 140, 185, 0.1) inset,
-    0 0 68px rgba(255, 90, 155, 0.1);
-}
-
-body.theme-alt .banner::after {
-  background: linear-gradient(
-    to bottom,
-    transparent 28%,
-    rgba(20, 6, 14, 0.35) 68%,
-    rgba(14, 4, 12, 0.75) 100%
-  );
-}
-
-body.theme-alt .views-badge {
-  background: rgba(14, 4, 12, 0.55);
-  border-color: rgba(255, 140, 190, 0.22);
-  color: rgba(255, 210, 230, 0.88);
-}
-
+body.theme-alt .enter-pulse { background: #6a9eef; box-shadow: 0 0 0 0 rgba(100, 160, 240, 0.45); }
+body.theme-alt .enter-avatar,
 body.theme-alt .avatar {
-  border-color: rgba(255, 200, 225, 0.92);
+  background: conic-gradient(from 0deg, #6a9eef, #e8f0ff, #6a9eef, #d04050, #6a9eef);
+}
+
+body.theme-alt .profile {
   box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.45),
-    0 0 28px rgba(255, 110, 175, 0.16);
-  animation: altGlow 4.8s ease-in-out infinite;
+    0 2px 0 rgba(160, 200, 255, 0.06) inset,
+    0 32px 80px rgba(0,0,0,0.5),
+    0 0 70px rgba(80, 140, 230, 0.08);
 }
-
-body.theme-alt .name-scatter .letter.is-active {
-  color: #ffe4f0;
-  text-shadow: 0 0 20px rgba(255, 130, 185, 0.45);
+body.theme-alt .profile:hover {
+  box-shadow: 0 2px 0 rgba(160, 200, 255, 0.1) inset, 0 40px 100px rgba(0,0,0,0.55), 0 0 90px var(--glow);
 }
-
-body.theme-alt .status-pill {
-  background: rgba(255, 120, 180, 0.1);
-  border-color: rgba(255, 150, 195, 0.18);
-  color: rgba(255, 200, 220, 0.75);
+body.theme-alt .profile::before {
+  background: linear-gradient(90deg, transparent, rgba(200,220,255,0.3), #6a9eef, rgba(200,220,255,0.3), transparent);
 }
-
-body.theme-alt .status-pill.listening {
-  background: var(--listen-bg);
-  border-color: var(--listen-border);
-  color: var(--listen);
-  box-shadow: 0 0 24px rgba(255, 110, 175, 0.2);
-}
-
-body.theme-alt .greeting {
-  color: rgba(255, 170, 200, 0.42);
-}
-
-body.theme-alt .tagline {
-  color: var(--muted);
-}
-
 body.theme-alt .bio {
-  color: rgba(255, 220, 235, 0.78);
+  border-left-color: rgba(106, 158, 239, 0.4);
+  color: rgba(210, 225, 245, 0.55);
 }
-
-body.theme-alt .bio::first-line {
-  color: rgba(255, 235, 245, 0.92);
+body.theme-alt .name-scatter .letter.is-active {
+  color: #8ab4ff;
+  text-shadow: 0 0 22px rgba(100, 160, 255, 0.45);
 }
-
-/* Bio sparkles tint */
-body.theme-alt .bio-sparkles i {
-  background: rgba(255, 180, 210, 0.55);
-  box-shadow: 0 0 6px rgba(255, 120, 180, 0.35);
+body.theme-alt .socials a:hover, body.theme-alt .share-btn:hover {
+  background: rgba(106, 158, 239, 0.15);
+  border-color: rgba(106, 158, 239, 0.4);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.3), 0 0 24px var(--glow);
 }
-
-/* Socials */
-body.theme-alt .socials a,
-body.theme-alt .share-btn {
-  background: rgba(255, 120, 180, 0.1);
-  border-color: rgba(255, 150, 195, 0.2);
+body.theme-alt .play-btn {
+  background: linear-gradient(145deg, rgba(106, 158, 239, 0.4), rgba(40, 80, 150, 0.25));
+  border-color: rgba(106, 158, 239, 0.45);
+  box-shadow: 0 6px 24px rgba(80, 140, 230, 0.28), inset 0 1px 0 rgba(255,255,255,0.12);
 }
-
-body.theme-alt .socials a:hover,
-body.theme-alt .share-btn:hover {
-  background: rgba(255, 130, 185, 0.22);
-  border-color: rgba(255, 180, 215, 0.48);
-  box-shadow: 0 4px 18px rgba(255, 90, 155, 0.2);
+body.theme-alt .play-btn:hover {
+  background: linear-gradient(145deg, rgba(130, 180, 255, 0.5), rgba(50, 100, 180, 0.3));
+  box-shadow: 0 8px 32px rgba(80, 140, 230, 0.4), 0 0 30px var(--glow);
 }
-
-/* ---------- Music player ---------- */
-body.theme-alt .player {
-  border-color: rgba(255, 150, 195, 0.2);
-  background: linear-gradient(
-    135deg,
-    rgba(32, 10, 22, 0.55) 0%,
-    rgba(22, 6, 16, 0.48) 100%
-  );
-}
-
 body.theme-alt .player:has(.viz.active) {
-  border-color: rgba(255, 160, 205, 0.32);
-  box-shadow: 0 0 36px rgba(255, 90, 155, 0.1);
+  border-color: rgba(106, 158, 239, 0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 40px var(--glow);
 }
-
-body.theme-alt .ctrl-btn {
-  background: rgba(255, 120, 180, 0.12);
-}
-
-body.theme-alt .ctrl-btn:hover {
-  background: rgba(255, 130, 185, 0.24);
-}
-
-body.theme-alt .ctrl-btn.play-btn {
-  background: rgba(255, 120, 180, 0.22);
-}
-
-body.theme-alt .ctrl-btn.play-btn:hover {
-  background: rgba(255, 140, 190, 0.36);
-}
-
-body.theme-alt .progress {
-  background: rgba(255, 150, 195, 0.14);
-}
-
-body.theme-alt .progress-bar {
-  background: var(--progress);
-  box-shadow: 0 0 10px rgba(255, 110, 175, 0.35);
-}
-
-body.theme-alt .viz span {
-  background: rgba(255, 180, 215, 0.82);
-}
-
-body.theme-alt .player-title {
-  color: #fff0f5;
-}
-
-body.theme-alt .player-artist {
-  color: rgba(255, 185, 210, 0.55);
-}
-
-body.theme-alt .time {
-  color: rgba(255, 170, 200, 0.5);
-}
-
-body.theme-alt .lyrics-snippet {
-  color: rgba(255, 190, 215, 0.55);
-}
-
-/* ---------- Works / Coverflow ---------- */
-body.theme-alt .works-header h2 {
-  color: #fff0f5;
-}
-
-body.theme-alt .works-header p {
-  color: rgba(255, 175, 205, 0.5);
-}
-
-body.theme-alt .works-header h2::after {
-  background: linear-gradient(90deg, rgba(255, 140, 190, 0.75), transparent);
-}
-
 body.theme-alt .orbit-filter.is-active {
-  background: rgba(255, 120, 180, 0.2);
-  border-color: rgba(255, 170, 210, 0.45);
-  box-shadow: 0 4px 18px rgba(255, 90, 155, 0.16);
+  background: rgba(106, 158, 239, 0.18);
+  border-color: rgba(106, 158, 239, 0.4);
+  box-shadow: 0 0 24px var(--glow);
 }
-
 body.theme-alt .cf-cover.is-active .cf-face {
-  border-color: rgba(255, 180, 215, 0.72);
-  box-shadow:
-    0 28px 70px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 130, 180, 0.12) inset,
-    0 0 48px rgba(255, 100, 165, 0.18);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 2px rgba(106, 158, 239, 0.4), 0 0 48px var(--glow);
 }
-
-body.theme-alt .orbit-nav.is-on,
-body.theme-alt .orbit-nav.orbit-auto.is-on {
-  border-color: rgba(255, 150, 195, 0.45);
-  background: rgba(255, 120, 180, 0.16);
+body.theme-alt .orbit-nav:hover {
+  background: rgba(106, 158, 239, 0.15);
+  border-color: rgba(106, 158, 239, 0.35);
+  box-shadow: 0 0 24px var(--glow);
 }
-
-body.theme-alt .orbit-tag[data-type="video"] {
-  color: rgba(255, 180, 215, 0.9);
-  border-color: rgba(255, 140, 190, 0.3);
-  background: rgba(255, 110, 175, 0.12);
+body.theme-alt .works-header h2::after {
+  background: linear-gradient(90deg, transparent, #6a9eef, transparent);
 }
+body.theme-alt .progress-bar { box-shadow: 0 0 12px rgba(80, 140, 230, 0.4); }
+body.theme-alt .tagline .caret { color: #6a9eef; }
 
-body.theme-alt .cf-stage::before {
-  background: radial-gradient(circle, rgba(255, 110, 175, 0.14) 0%, transparent 70%);
+/* light fx — alt / 222 (ice silver) */
+body.theme-alt .light-bloom {
+  background: radial-gradient(circle, rgba(120, 170, 255, 0.16) 0%, rgba(80, 120, 200, 0.05) 40%, transparent 70%);
+  left: -15%; right: auto; top: -18%;
 }
-
-/* ---------- Toast / Footer ---------- */
-body.theme-alt .toast {
-  border-color: rgba(255, 150, 195, 0.22);
-  background: rgba(24, 8, 18, 0.94);
-  color: rgba(255, 220, 235, 0.92);
+body.theme-alt .light-ray {
+  background: linear-gradient(180deg, transparent, rgba(160, 200, 255, 0.05) 25%, rgba(220, 235, 255, 0.11) 50%, rgba(140, 180, 240, 0.04) 75%, transparent);
 }
-
-body.theme-alt .site-footer {
-  color: rgba(255, 175, 205, 0.32);
+body.theme-alt .light-orb.orb-1 {
+  background: radial-gradient(circle, rgba(150, 190, 255, 0.5) 0%, transparent 70%);
 }
-
-body.theme-alt .site-footer:hover {
-  color: rgba(255, 195, 220, 0.5);
+body.theme-alt .light-orb.orb-2 {
+  background: radial-gradient(circle, rgba(100, 150, 230, 0.35) 0%, transparent 70%);
 }
-
-/* ---------- Share modal ---------- */
-body.theme-alt .share-modal-panel {
-  background: rgba(22, 8, 16, 0.94);
-  border-color: rgba(255, 150, 195, 0.18);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 110, 175, 0.06);
+body.theme-alt .light-orb.orb-3 {
+  background: radial-gradient(circle, rgba(200, 80, 90, 0.25) 0%, transparent 70%); /* blood petal hint */
 }
-
-body.theme-alt .share-action.primary {
-  background: rgba(255, 120, 180, 0.2);
-  border-color: rgba(255, 160, 205, 0.35);
+body.theme-alt .light-streak {
+  background: linear-gradient(90deg, transparent, rgba(140, 180, 240, 0.04) 25%, rgba(200, 220, 255, 0.12) 50%, rgba(140, 180, 240, 0.04) 75%, transparent);
 }
-
-body.theme-alt .share-action.primary:hover {
-  background: rgba(255, 140, 190, 0.3);
-}
-
-/* ---------- Cursor ---------- */
-body.theme-alt .cursor-glow {
-  background: radial-gradient(circle, rgba(255, 130, 185, 0.24) 0%, transparent 70%);
-}
-
-body.theme-alt .trail-dot {
-  background: rgba(255, 180, 215, 0.55);
-  box-shadow: 0 0 7px rgba(255, 110, 175, 0.28);
-}
-
-body.theme-alt .cursor {
-  background: rgba(255, 230, 240, 0.92);
-}
-
-body.theme-alt.cursor-hover .cursor {
-  background: rgba(255, 150, 195, 0.4);
-  border-color: rgba(255, 200, 225, 0.7);
-}
-
-/* ---------- Selection / Scrollbar / Focus ---------- */
-body.theme-alt ::selection {
-  background: rgba(255, 120, 180, 0.38);
-  color: #fff;
-}
-
-body.theme-alt {
-  scrollbar-color: rgba(255, 140, 190, 0.35) transparent;
-}
-
-body.theme-alt ::-webkit-scrollbar-thumb {
-  background: rgba(255, 130, 185, 0.28);
-  background-clip: padding-box;
-}
-
-body.theme-alt ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 150, 200, 0.45);
-  background-clip: padding-box;
-}
-
-body.theme-alt :focus-visible {
-  outline-color: rgba(255, 170, 210, 0.55);
-}
-
-/* ---------- Particles ---------- */
-body.theme-alt .particle {
-  background: rgba(255, 170, 205, 0.34);
-  box-shadow: 0 0 6px rgba(255, 110, 175, 0.16);
-}
-
-/* ---------- Status dot ---------- */
-body.theme-alt .status-dot {
-  background: var(--listen);
-  box-shadow: 0 0 0 0 rgba(255, 110, 175, 0.4);
-}
-
-body.theme-alt .status-pill.listening .status-dot {
-  animation: pulseDotAlt 1.4s ease-in-out infinite;
-}
-
-/* ---------- Animations ---------- */
-@keyframes altGlow {
-  0%, 100% {
-    box-shadow:
-      0 8px 28px rgba(0, 0, 0, 0.45),
-      0 0 0 0 rgba(255, 110, 175, 0.06);
-  }
-  50% {
-    box-shadow:
-      0 10px 32px rgba(0, 0, 0, 0.5),
-      0 0 0 7px rgba(255, 110, 175, 0.14),
-      0 0 36px rgba(255, 100, 165, 0.14);
-  }
-}
-
-@keyframes pulseDotAlt {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 110, 175, 0.45); }
-  50% { box-shadow: 0 0 0 6px rgba(255, 110, 175, 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body.theme-alt .enter-avatar,
-  body.theme-alt .avatar {
-    animation: none !important;
-  }
-  body.theme-alt .status-pill.listening .status-dot {
-    animation: none !important;
-  }
+body.theme-alt .profile::after {
+  background: linear-gradient(135deg, rgba(200, 220, 255, 0.09) 0%, transparent 30%, transparent 70%, rgba(100, 150, 230, 0.04) 100%);
 }

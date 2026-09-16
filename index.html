@@ -7,12 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="theme-222.css" />
-  <link rel="stylesheet" href="theme-noir.css" />
-  <link rel="stylesheet" href="theme-capitano.css" />
-  <link rel="stylesheet" href="theme-alucard.css" />
-  <link rel="stylesheet" href="theme-secret.css" />
+  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="theme-222.css?v=6" />
+  <link rel="stylesheet" href="theme-noir.css?v=6" />
+  <link rel="stylesheet" href="theme-capitano.css?v=6" />
+  <link rel="stylesheet" href="theme-alucard.css?v=6" />
+  <link rel="stylesheet" href="theme-aegir.css?v=6" />
+  <link rel="stylesheet" href="theme-secret.css?v=6" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body class="locked">
@@ -49,6 +50,18 @@
   </div>
   <div class="video-overlay" aria-hidden="true"></div>
   <div class="noise" aria-hidden="true"></div>
+
+  <!-- Light atmosphere -->
+  <div class="light-fx" aria-hidden="true">
+    <div class="light-bloom"></div>
+    <div class="light-ray ray-a"></div>
+    <div class="light-ray ray-b"></div>
+    <div class="light-ray ray-c"></div>
+    <div class="light-orb orb-1"></div>
+    <div class="light-orb orb-2"></div>
+    <div class="light-orb orb-3"></div>
+    <div class="light-streak"></div>
+  </div>
 
   <!-- Floating particles -->
   <div class="particles" id="particles" aria-hidden="true"></div>
@@ -272,7 +285,9 @@
       const clips = [
         'ssstik.io_@soul.blr_1779080280199.mp4',
         '222.mp4',
-        'capitano.mp4'
+        'capitano.mp4',
+        'qingxioa.mp4',
+        'alucard.mp4'
       ];
       const pick = clips[Math.floor(Math.random() * clips.length)];
       window.__bgClip = pick;
@@ -316,6 +331,36 @@
         if (artist) artist.textContent = 'Halsey · instrumental';
       }
 
+      if (pick === 'qingxioa.mp4') {
+        document.body.classList.add('theme-aegir');
+        window.__audioStartAt = 4;
+        const audio = document.getElementById('audio');
+        const srcEl = audio && audio.querySelector('source');
+        if (srcEl) {
+          srcEl.src = 'funk-mandala-slowed.mp3';
+          audio.load();
+        }
+        const title = document.getElementById('playerTitle');
+        const artist = document.getElementById('playerArtist');
+        if (title) title.textContent = 'SWIM';
+        if (artist) artist.textContent = 'Chase Atlantic · instrumental';
+      }
+
+      if (pick === 'alucard.mp4') {
+        document.body.classList.add('theme-alucard');
+        const audio = document.getElementById('audio');
+        const srcEl = audio && audio.querySelector('source');
+        if (srcEl) {
+          srcEl.src = 'The Neighbourhood - Sweater Weather.mp3';
+          audio.load();
+        }
+        const title = document.getElementById('playerTitle');
+        const artist = document.getElementById('playerArtist');
+        if (title) title.textContent = 'Sweater Weather';
+        if (artist) artist.textContent = 'The Neighbourhood';
+        window.__audioStartAt = 19;
+      }
+
       // 222.mp4 → ธีมอุ่น + เพลง Ariana remix (เริ่มที่ 0:33)
       if (pick === '222.mp4') {
         document.body.classList.add('theme-alt');
@@ -351,9 +396,10 @@
         Numpad1: 'ssstik.io_@soul.blr_1779080280199.mp4',
         Numpad2: '222.mp4',
         Numpad3: 'capitano.mp4',
-        Numpad4: 'alucard.mp4'
+        Numpad4: 'qingxioa.mp4',
+        Numpad5: 'alucard.mp4'
       };
-      const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-alucard', 'theme-secret'];
+      const themeClasses = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-aegir', 'theme-alucard', 'theme-secret'];
       const isEditableTarget = (target) => target instanceof Element && target.matches('input, textarea, [contenteditable="true"]');
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let switching = false;
@@ -379,32 +425,31 @@
       }
 
       function applyThemeClasses(clip) {
-        const isAlt = clip === '222.mp4';
-        const isCapitano = clip === 'capitano.mp4';
-        const isAlucard = clip === 'alucard.mp4';
         document.body.classList.remove(...themeClasses);
         if (clip === 'ssstik.io_@soul.blr_1779080280199.mp4') document.body.classList.add('theme-noir');
-        if (isAlt) document.body.classList.add('theme-alt');
-        if (isCapitano) document.body.classList.add('theme-capitano');
-        if (isAlucard) document.body.classList.add('theme-alucard');
+        if (clip === '222.mp4') document.body.classList.add('theme-alt');
+        if (clip === 'capitano.mp4') document.body.classList.add('theme-capitano');
+        if (clip === 'qingxioa.mp4') document.body.classList.add('theme-aegir');
+        if (clip === 'alucard.mp4') document.body.classList.add('theme-alucard');
       }
 
       function applyMeta(clip) {
-        const isAlt = clip === '222.mp4';
-        const isCapitano = clip === 'capitano.mp4';
-        const isAlucard = clip === 'alucard.mp4';
         const title = document.getElementById('playerTitle');
         const artist = document.getElementById('playerArtist');
         const duration = document.getElementById('duration');
-        if (isAlt) {
+        if (clip === '222.mp4') {
           if (title) title.textContent = 'bye × Into You';
           if (artist) artist.textContent = 'Ariana Grande · Altare Remix';
           if (duration) duration.textContent = '9:50';
-        } else if (isCapitano) {
+        } else if (clip === 'capitano.mp4') {
           if (title) title.textContent = 'Gasoline';
           if (artist) artist.textContent = 'Halsey · instrumental';
           if (duration) duration.textContent = '0:00';
-        } else if (isAlucard) {
+        } else if (clip === 'qingxioa.mp4') {
+          if (title) title.textContent = 'SWIM';
+          if (artist) artist.textContent = 'Chase Atlantic · instrumental';
+          if (duration) duration.textContent = '0:00';
+        } else if (clip === 'alucard.mp4') {
           if (title) title.textContent = 'Sweater Weather';
           if (artist) artist.textContent = 'The Neighbourhood';
           if (duration) duration.textContent = '0:00';
@@ -436,13 +481,14 @@
         const wasPlaying = audio && !audio.paused;
         const isAlt = clip === '222.mp4';
         const isCapitano = clip === 'capitano.mp4';
+        const isAegir = clip === 'qingxioa.mp4';
         const isAlucard = clip === 'alucard.mp4';
         const targetVol = audio ? (typeof audio.dataset.userVol !== 'undefined'
           ? parseFloat(audio.dataset.userVol)
           : (audio.volume || 0.7)) : 0.7;
 
         window.__bgClip = clip;
-        window.__audioStartAt = isAlt ? 33 : (isAlucard ? 19 : 0);
+        window.__audioStartAt = isAlt ? 33 : (isAlucard ? 19 : (isAegir ? 4.1 : 0));
 
         // preload next video on inactive layer
         if (incoming) {
@@ -496,9 +542,11 @@
           if (source) {
             source.src = isAlt
               ? 'bye-into-you-remix.mp3'
-              : (isAlucard
-                ? 'The Neighbourhood - Sweater Weather.mp3'
-                : (isCapitano ? 'Halsey-Gasoline(instrumental).mp3' : 'Insomnia slowed reverb.mp3'));
+              : (isAegir
+                ? 'funk-mandala-slowed.mp3'
+                : (isAlucard
+                  ? 'The Neighbourhood - Sweater Weather.mp3'
+                  : (isCapitano ? 'Halsey-Gasoline(instrumental).mp3' : 'Insomnia slowed reverb.mp3')));
           }
           audio.load();
           const startPlay = () => {
@@ -522,7 +570,9 @@
             ? 'theme · 222'
             : (isCapitano
               ? 'theme · capitano'
-              : (isAlucard ? 'theme · alucard' : 'theme · noir'));
+              : (isAegir
+                ? 'theme · aegir'
+                : (isAlucard ? 'theme · alucard' : 'theme · noir')));
           showToast(label);
         }
       }
@@ -531,8 +581,8 @@
       window.__switchBackground = switchBackground;
 
       window.addEventListener('keydown', (event) => {
-        // Numpad5 = secret terminal overlay (optional)
-        if (event.code === 'Numpad5' && !isEditableTarget(event.target)) {
+        // Numpad6 = secret terminal overlay (optional)
+        if (event.code === 'Numpad6' && !isEditableTarget(event.target)) {
           event.preventDefault();
           const isSecret = document.body.classList.toggle('theme-secret');
           if (typeof showToast === 'function') {
@@ -1422,8 +1472,7 @@
         { type: 'video', src: '1.1.mp4', poster: 'vid-1.1.jpg', caption: 'Clip 01 · FiveM moment', sub: '0:06 · gameplay' },
         { type: 'video', src: '1.2.mp4', poster: 'vid-1.2.jpg', caption: 'Clip 02 · FiveM moment', sub: '0:13 · gameplay' },
         { type: 'video', src: '1.3.mp4', poster: 'vid-1.3.jpg', caption: 'Clip 03 · FiveM moment', sub: '0:13 · gameplay' },
-        { type: 'video', src: '1.4.mp4', poster: 'vid-1.4.jpg', caption: 'Clip 04 · FiveM moment', sub: '0:13 · gameplay' },
-        { type: 'video', src: 'เทส.mp4', poster: 'medal.png', caption: 'Clip 05 · FiveM moment', sub: '0:13 · gameplay' }
+        { type: 'video', src: '1.4.mp4', poster: 'vid-1.4.jpg', caption: 'Clip 04 · FiveM moment', sub: '0:13 · gameplay' }
       ];
 
       const stage = document.getElementById('cfStage');
